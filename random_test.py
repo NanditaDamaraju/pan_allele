@@ -1,5 +1,7 @@
 import sys
-path = "/Users/NanditaD/Intern/"
+import os
+path = os.getcwd()
+print path
 #path = "/home/ubuntu/py/"
 sys.path.append(path)
 from pan_allele.helpers.feedforward_models import ffn_matrix, build_graph_native_sequence_model
@@ -100,7 +102,7 @@ if (pred[:3] == 'ffn'):
     cutoff = hyperparameters['cutoff'][0]
 
 create_fasta_file(path, remove_residues = remove_residues, consensus_cutoff =cutoff)
-mhc_sequence_fasta_file = 'files/pseudo/pseudo_sequences.fasta'
+mhc_sequence_fasta_file = 'pan_allele/files/pseudo/pseudo_sequences.fasta'
 allele_sequence_data, max_allele_length = load_allele_sequence_data(mhc_sequence_fasta_file)
 
 if (pred == 'ffn_concat'):
@@ -119,7 +121,7 @@ initial_weights = graph.get_weights()
 
 
 graph.set_weights(initial_weights)
-graph.load_weights('weights/weights_' + pred + '/weights1')
+graph.load_weights('weights/weights_' + pred + '/weights14')
 predictors = ['mhcflurry', 'netmhcpan', 'netmhc', 'smmpmbec_cpp']
 metrics = ['AUC', 'ACC', 'F1', 'precision', 'recall']
 total_metrics = collections.defaultdict(dict)
