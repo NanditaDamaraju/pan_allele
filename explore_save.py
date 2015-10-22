@@ -1,13 +1,12 @@
-
-from pan_allele_data_helpers import *
 import pandas as pd
 import numpy as np
 from sklearn.metrics import roc_auc_score, accuracy_score
 log_transformed_ic50_cutoff = 1 - np.log(500)/np.log(5000)
-from feedforward_models import ffn_matrix, build_graph_native_sequence_model
-from sequence_encoding import padded_indices
-from amino_acid import amino_acid_letter_indices
-from generate_pseudo_sequences import create_fasta_file
+from pan_allele.helpers.data_helpers import *
+from pan_allele.helpers.feedforward_models import ffn_matrix, build_graph_native_sequence_model
+from pan_allele.helpers.sequence_encoding import padded_indices
+from pan_allele.helpers.amino_acid import amino_acid_letter_indices
+from pan_allele.helpers.generate_pseudo_sequences import create_fasta_file
 import keras
 from sys import argv
 
