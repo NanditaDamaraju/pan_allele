@@ -2,7 +2,6 @@ import sys
 import os
 path = os.getcwd()
 print path
-#path = "/home/ubuntu/py/"
 sys.path.append(path)
 from pan_allele.helpers.feedforward_models import ffn_matrix, build_graph_native_sequence_model
 from pan_allele.helpers.convolution_model import convolution_graph_matrix
