@@ -24,6 +24,17 @@ def create_fasta_file(path, remove_residues = False, consensus_cutoff = 0):
             if (char_occurence_dict.most_common(1)[0][1] >= len(allele_list)* (1 - consensus_cutoff )) :
                 delete_columns.append(columns)
 
+        all_sequences = []
+
+        with open('pan_allele/files/trimmed-human-class1.fasta', 'rU') as f:
+            for record in SeqIO.parse(f, 'fasta'):
+                name, sequence = record.description, str(record.seq)
+                name = name.split(' ')[0]
+                if(len(sequence) == 181):
+                    all_sequences.append(sequence)
+                    allele_list.append(name)
+
+        sequence_mat = np.array([list(seq) for seq in all_sequences])
         pseudo_sequences = np.delete(sequence_mat,delete_columns,axis=1)
         pseudo_sequences = [''.join(chars) for chars in pseudo_sequences ]
 

@@ -1,7 +1,6 @@
 import sys
 import os
 path = os.getcwd()
-print path
 sys.path.append(path)
 from pan_allele.helpers.feedforward_models import ffn_matrix, build_graph_native_sequence_model
 from pan_allele.helpers.convolution_model import convolution_graph_matrix
@@ -65,8 +64,8 @@ def read_predictions(filename):
                         pass
     return predictions
 
-def make_prediction(peptide, allele, model):
-    mhc_seq = padded_indices([allele_sequence_data[allele]],
+def make_prediction(peptide, allele_sequence, model):
+    mhc_seq = padded_indices([allele_sequence],
                                     add_start_symbol=False,
                                     add_end_symbol=False,
                                     index_dict=amino_acid_letter_indices)
@@ -76,87 +75,94 @@ def make_prediction(peptide, allele, model):
                             index_dict=amino_acid_letter_indices)
     mhc_seq = np.tile(mhc_seq,(len(X_p),1))
     preds = model.predict({'peptide':X_p,'mhc':mhc_seq})['output']
+    #print format_peptide(peptide), preds
     preds = np.mean(preds)
-    value =  max_ic50**(1- preds)
-    return float(value)
+
+    return float(preds)
 
 
 
 
 
 
+def main():
 
-#hyperparameters = {'cutoff':[ 0.33711265], 'dropouts': [ 0. ,  0.0254818 ,  0.10669398], 'sizes': [ 53,  82, 103,  74, 106, 59]}
-##hyperparameters feed forward network concat
-hyperparameters  = {'cutoff':[ 0], 'dropouts': [ 0.17621593,  0. ,  0.   ], 'sizes': [ 16, 128,  99, 128, 102], 'mult_size': [32, 15]}
-##hyperparameters convolutional network matrix multiply
-#hyperparameters = {'filter_length': [3, 4], 'nb_filter': [67, 92], 'mult_size': [32, 10], 'layer_size': [ 128, 92, 65]}
-remove_residues = False
-pred = sys.argv[1]
+    #hyperparameters = {'cutoff':[ 0.33711265], 'dropouts': [ 0. ,  0.0254818 ,  0.10669398], 'sizes': [ 53,  82, 103,  74, 106, 59]}
+    ##hyperparameters feed forward network concat
+    hyperparameters  = {'cutoff':[ 0], 'dropouts': [ 0.17621593,  0. ,  0.   ], 'sizes': [ 16, 128,  99, 128, 102], 'mult_size': [32, 15]}
+    ##hyperparameters convolutional network matrix multiply
+    #hyperparameters = {'filter_length': [3, 4], 'nb_filter': [67, 92], 'mult_size': [32, 10], 'layer_size': [ 128, 92, 65]}
+    remove_residues = False
+    pred = sys.argv[1]
 
-cutoff = 0
+    cutoff = 0
 
-if (pred[:3] == 'ffn'):
-    remove_residues = True
-    cutoff = hyperparameters['cutoff'][0]
+    if (pred[:3] == 'ffn'):
+        remove_residues = True
+        cutoff = hyperparameters['cutoff'][0]
 
-create_fasta_file(path, remove_residues = remove_residues, consensus_cutoff =cutoff)
-mhc_sequence_fasta_file = 'pan_allele/files/pseudo/pseudo_sequences.fasta'
-allele_sequence_data, max_allele_length = load_allele_sequence_data(mhc_sequence_fasta_file)
+    create_fasta_file(path, remove_residues = remove_residues, consensus_cutoff =cutoff)
+    mhc_sequence_fasta_file = 'pan_allele/files/pseudo/pseudo_sequences.fasta'
+    allele_sequence_data, max_allele_length = load_allele_sequence_data(mhc_sequence_fasta_file)
 
-if (pred == 'ffn_concat'):
-    graph = build_graph_native_sequence_model(hyperparameters=hyperparameters, maxlen_mhc = max_allele_length)
-elif(pred == 'ffn_mult'):
-    graph = ffn_matrix( hyperparameters=hyperparameters, maxlen_mhc = max_allele_length)
-elif(pred =='conv'):
-    graph = convolution_graph_matrix(hyperparameters = hyperparameters, maxlen_mhc = max_allele_length )
-initial_weights = graph.get_weights()
-
-
-
+    if (pred == 'ffn_concat'):
+        graph = build_graph_native_sequence_model(hyperparameters=hyperparameters, maxlen_mhc = max_allele_length)
+    elif(pred == 'ffn_mult'):
+        graph = ffn_matrix( hyperparameters=hyperparameters, maxlen_mhc = max_allele_length)
+    elif(pred =='conv'):
+        graph = convolution_graph_matrix(hyperparameters = hyperparameters, maxlen_mhc = max_allele_length )
+    initial_weights = graph.get_weights()
 
 
-##Load graph
+    peptide =
 
 
-graph.set_weights(initial_weights)
-graph.load_weights('weights/weights_' + pred + '/weights14')
-predictors = ['mhcflurry', 'netmhcpan', 'netmhc', 'smmpmbec_cpp']
-metrics = ['AUC', 'ACC', 'F1', 'precision', 'recall']
-total_metrics = collections.defaultdict(dict)
-for val in predictors:
-    for metric in metrics:
-        total_metrics[val][metric] = 0
+    ##Load graph
+
+    for num in range(1,30):
 
 
-allele_list = ['A0101',	    'A0201',	'A0202',    'A0203',	'A0206',	'A0301',	'A1101',	'A2301',	'A2402',	'A2501',	'A2601',
-                'A2602',	'A2603',	'A2902',	'A3001',	'A3002',	'A3101',	'A3201',	'A3301',	'A6801',	'A6802',	'A6901',
-                'A8001',	'B0702',	'B0801',	'B0802',	'B0803',	'B1501',	'B1503',	'B1509',	'B1517',	'B1801',	'B2703',
-                'B2705',	'B3501',	'B3801',	'B3901',	'B4001',	'B4002',	'B4402',	'B4403',	'B4501',	'B4601',	'B5101',
-                'B5301',	'B5401',	'B5701',	'B5801'	]
+        predictors = ['mhcflurry', 'netmhcpan', 'netmhc', 'smmpmbec_cpp']
+        metrics = ['AUC', 'ACC', 'F1', 'precision', 'recall']
+        total_metrics = collections.defaultdict(dict)
+        for val in predictors:
+            for metric in metrics:
+                total_metrics[val][metric] = 0
 
-total = 0
-num = 14
-for allele in allele_list:
-    filename = 'combined-test-data/'+ allele + '.csv'
-    predictions = read_predictions(filename)
-    peptides = predictions.keys()
-    for peptide in peptides:
-        predictions[peptide]['mhcflurry'] = make_prediction(peptide, allele, graph)
 
-    df_pred = pd.DataFrame(predictions)
-    Y_true = np.array(df_pred.loc['meas'])
-    #print "\n=====", allele, sum(Y_true <= 500), len(Y_true), "===="
+        # #allele_list = ['A0101',	    'A0201',	'A0202',    'A0203',	'A0206',	'A0301',	'A1101',	'A2301',	'A2402',	'A2501',	'A2601',
+        #                 'A2602',	'A2603',	'A2902',	'A3001',	'A3002',	'A3101',	'A3201',	'A3301',	'A6801',	'A6802',	'A6901',
+        #                 'A8001',	'B0702',	'B0801',	'B0802',	'B0803',	'B1501',	'B1503',	'B1509',	'B1517',	'B1801',	'B2703',
+        #                 'B2705',	'B3501',	'B3801',	'B3901',	'B4001',	'B4002',	'B4402',	'B4403',	'B4501',	'B4601',	'B5101',
+        #                 'B5301',	'B5401',	'B5701',	'B5801'	]
 
-    for val in predictors:
-        Y_pred = np.array(df_pred.loc[val])
-        calculated_metrics = scores(Y_true, Y_pred)
-        #print val, calculated_metrics
-        for idx, metric in enumerate(metrics):
-            total_metrics[val][metric] += calculated_metrics[idx+1] * calculated_metrics[0]
-    total+=calculated_metrics[0]
-print "\n",num
-for val in predictors:
-    print "\n",val
-    for metric in metrics:
-        print metric, "=", total_metrics[val][metric]/total,
+        allele_list = ['A0201']
+        total = 0
+        num = 14
+        for allele in allele_list:
+            filename = 'combined-test-data/'+ allele + '.csv'
+            predictions = read_predictions(filename)
+            peptides = predictions.keys()
+            for peptide in peptides:
+                predictions[peptide]['mhcflurry'] = 20000*(1-make_prediction(peptide, allele_sequence_data[allele], graph))
+                #print peptide, predictions[peptide]
+            df_pred = pd.DataFrame(predictions)
+            Y_true = np.array(df_pred.loc['meas'])
+            #print "\n=====", allele, sum(Y_true <= 500), len(Y_true), "===="
+
+            for val in predictors:
+                Y_pred = np.array(df_pred.loc[val])
+                calculated_metrics = scores(Y_true, Y_pred)
+                #print val, calculated_metrics
+                for idx, metric in enumerate(metrics):
+                    total_metrics[val][metric] += calculated_metrics[idx+1] * calculated_metrics[0]
+            total+=calculated_metrics[0]
+        print "\n",num
+        for val in predictors:
+            print "\n",val
+            for metric in metrics:
+                print metric, "=", total_metrics[val][metric]/total,
+
+
+if __name__ == "__main__":
+    main()
