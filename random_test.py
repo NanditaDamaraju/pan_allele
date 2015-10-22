@@ -1,5 +1,5 @@
 import sys
-path = "/Users/NanditaD/Intern/mhclearn/py/"
+path = "/Users/NanditaD/Intern/"
 #path = "/home/ubuntu/py/"
 sys.path.append(path)
 from pan_allele.helpers.feedforward_models import ffn_matrix, build_graph_native_sequence_model
@@ -79,9 +79,9 @@ def make_prediction(peptide, allele, model):
     value =  max_ic50**(1- preds)
     return float(value)
 
-hyperparameters = {'cutoff':[ 0.33711265], 'dropouts': [ 0. ,  0.0254818 ,  0.10669398], 'sizes': [ 53,  82, 103,  74, 106, 59]}
+#hyperparameters = {'cutoff':[ 0.33711265], 'dropouts': [ 0. ,  0.0254818 ,  0.10669398], 'sizes': [ 53,  82, 103,  74, 106, 59]}
 ##hyperparameters feed forward network concat
-#hyperparameters  = {'cutoff':[ 0], 'dropouts': [ 0.17621593,  0. ,  0.   ], 'sizes': [ 16, 128,  99, 128, 102], 'mult_size': [32, 15]}
+hyperparameters  = {'cutoff':[ 0], 'dropouts': [ 0.17621593,  0. ,  0.   ], 'sizes': [ 16, 128,  99, 128, 102], 'mult_size': [32, 15]}
 ##hyperparameters convolutional network matrix multiply
 #hyperparameters = {'filter_length': [3, 4], 'nb_filter': [67, 92], 'mult_size': [32, 10], 'layer_size': [ 128, 92, 65]}
 remove_residues = False
@@ -100,9 +100,9 @@ allele_sequence_data, max_allele_length = load_allele_sequence_data(mhc_sequence
 if (pred == 'ffn_concat'):
     graph = build_graph_native_sequence_model(hyperparameters=hyperparameters, maxlen_mhc = max_allele_length)
 elif(pred == 'ffn_mult'):
-    graph = ffn_matrix( hyperparameters=hyperparameters_ffn, maxlen_mhc = max_allele_length)
+    graph = ffn_matrix( hyperparameters=hyperparameters, maxlen_mhc = max_allele_length)
 elif(pred =='conv'):
-    graph = convolution_graph_matrix(hyperparameters = hyperparameters_conv, maxlen_mhc = max_allele_length )
+    graph = convolution_graph_matrix(hyperparameters = hyperparameters, maxlen_mhc = max_allele_length )
 initial_weights = graph.get_weights()
 
 
