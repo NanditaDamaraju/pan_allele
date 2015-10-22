@@ -79,6 +79,12 @@ def make_prediction(peptide, allele, model):
     value =  max_ic50**(1- preds)
     return float(value)
 
+
+
+
+
+
+
 #hyperparameters = {'cutoff':[ 0.33711265], 'dropouts': [ 0. ,  0.0254818 ,  0.10669398], 'sizes': [ 53,  82, 103,  74, 106, 59]}
 ##hyperparameters feed forward network concat
 hyperparameters  = {'cutoff':[ 0], 'dropouts': [ 0.17621593,  0. ,  0.   ], 'sizes': [ 16, 128,  99, 128, 102], 'mult_size': [32, 15]}
@@ -89,9 +95,9 @@ pred = sys.argv[1]
 
 cutoff = 0
 
-if (pred[:3] == 'ffn_concat'):
+if (pred[:3] == 'ffn'):
     remove_residues = True
-    cutoff = hyperparameters['cutoff']
+    cutoff = hyperparameters['cutoff'][0]
 
 create_fasta_file(path, remove_residues = remove_residues, consensus_cutoff =cutoff)
 mhc_sequence_fasta_file = 'files/pseudo/pseudo_sequences.fasta'
@@ -108,8 +114,12 @@ initial_weights = graph.get_weights()
 
 
 
+
+##Load graph
+
+
 graph.set_weights(initial_weights)
-graph.load_weights('paper_data/weights' + pred + '/weights' + str(num))
+graph.load_weights('weights/weights_' + pred + '/weights1')
 predictors = ['mhcflurry', 'netmhcpan', 'netmhc', 'smmpmbec_cpp']
 metrics = ['AUC', 'ACC', 'F1', 'precision', 'recall']
 total_metrics = collections.defaultdict(dict)
@@ -118,13 +128,14 @@ for val in predictors:
         total_metrics[val][metric] = 0
 
 
-    allele_list = ['A0101',	    'A0201',	    'A0202',	    'A0203',	    'A0206',	    'A0301',	    'A1101',	    'A2301',	    'A2402',	    'A2501',	    'A2601',
-'A2602',	'A2603',	'A2902',	'A3001',	'A3002',	'A3101',	'A3201',	'A3301',	'A6801',	'A6802',	'A6901',
-'A8001',	'B0702',	'B0801',	'B0802',	'B0803',	'B1501',	'B1503',	'B1509',	'B1517',	'B1801',	'B2703',
-'B2705',	'B3501',	'B3801',	'B3901',	'B4001',	'B4002',	'B4402',	'B4403',	'B4501',	'B4601',	'B5101',
-'B5301',	'B5401',	'B5701',	'B5801'	]
+allele_list = ['A0101',	    'A0201',	'A0202',    'A0203',	'A0206',	'A0301',	'A1101',	'A2301',	'A2402',	'A2501',	'A2601',
+                'A2602',	'A2603',	'A2902',	'A3001',	'A3002',	'A3101',	'A3201',	'A3301',	'A6801',	'A6802',	'A6901',
+                'A8001',	'B0702',	'B0801',	'B0802',	'B0803',	'B1501',	'B1503',	'B1509',	'B1517',	'B1801',	'B2703',
+                'B2705',	'B3501',	'B3801',	'B3901',	'B4001',	'B4002',	'B4402',	'B4403',	'B4501',	'B4601',	'B5101',
+                'B5301',	'B5401',	'B5701',	'B5801'	]
 
 total = 0
+num = 14
 for allele in allele_list:
     filename = 'combined-test-data/'+ allele + '.csv'
     predictions = read_predictions(filename)

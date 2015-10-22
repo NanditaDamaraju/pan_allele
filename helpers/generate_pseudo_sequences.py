@@ -2,7 +2,6 @@ import pandas as pd
 import numpy as np
 from Bio import SeqIO
 from collections import Counter
-import pickle
 
 def create_fasta_file(path, remove_residues = False, consensus_cutoff = 0):
     sequence_array =[]
