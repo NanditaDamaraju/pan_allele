@@ -21,7 +21,7 @@ class LossHistory(keras.callbacks.Callback):
 
     def on_epoch_end(self, epoch, logs={}):
         model_save = self.model
-        model_save.save_weights('weights/weights_ffn/weights' + str(epoch),overwrite=True)
+        model_save.save_weights('weights/weights_ffn_mult/weights' + str(epoch),overwrite=True)
 
 def normalize_allele_name(allele_name):
     allele_name = allele_name.upper()
