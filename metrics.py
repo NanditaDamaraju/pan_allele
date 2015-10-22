@@ -114,12 +114,12 @@ def main():
     initial_weights = graph.get_weights()
 
 
-    peptide =
+
 
 
     ##Load graph
 
-    for num in range(1,30):
+    for num in range(1,5):
 
 
         predictors = ['mhcflurry', 'netmhcpan', 'netmhc', 'smmpmbec_cpp']
