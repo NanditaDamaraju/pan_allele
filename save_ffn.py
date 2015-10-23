@@ -40,7 +40,7 @@ def normalize_allele_name(allele_name):
 hyperparameters =  {'cutoff':[ 0], 'dropouts': [ 0.17621593,  0.        ,  0.   ], 'sizes': [ 16, 128,  99, 128, 102], 'mult_size': [32, 15]}
 #hyperparameters = {'cutoff':[ 0.33711265], 'dropouts': [ 0. ,  0.0254818 ,  0.10669398], 'sizes': [ 53,  82, 103,  74, 106, 59]}
 
-create_fasta_file(path, remove_residues = True, consensus_cutoff = hyperparameters['cutoff'])
+create_fasta_file(path, remove_residues = True, consensus_cutoff = hyperparameters['cutoff'][0])
 
 
 allele_groups, df = load_binding_data('pan_allele/files/bdata.2009.mhci.public.1.txt')
