@@ -122,7 +122,7 @@ for allele in allele_list:
     peptides = ['LLFGYPVYV','FLPSDFFPSV','ILDDNLYKV']
     for peptide in peptides:
         if(len(peptide)>7 and len(peptide)<12):
-            print allele, peptide, predictions[allele][peptide], make_prediction(peptide, allele_sequence_data[allele], graph)
+            print allele, peptide, predictions[allele][peptide], 20000**(1-make_prediction(peptide, allele_sequence_data[allele], graph))
             Y_true.append( predictions[allele][peptide])
             Y_pred.append(make_prediction(peptide, allele_sequence_data[allele], graph))
     print "\n=====", allele, sum(Y_true), len(Y_true), "===="

@@ -136,7 +136,7 @@ def main():
         #                 'B2705',	'B3501',	'B3801',	'B3901',	'B4001',	'B4002',	'B4402',	'B4403',	'B4501',	'B4601',	'B5101',
         #                 'B5301',	'B5401',	'B5701',	'B5801'	]
 
-        allele_list = ['A0201']
+        #allele_list = ['A0201']
         total = 0
         for allele in allele_list:
             filename = 'combined-test-data/'+ allele + '.csv'
