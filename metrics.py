@@ -121,7 +121,7 @@ def main():
 
     for num in range(1,5):
 
-
+        graph.load_weights('weights/weights_ffn_mult/weights' + str(num))
         predictors = ['mhcflurry', 'netmhcpan', 'netmhc', 'smmpmbec_cpp']
         metrics = ['AUC', 'ACC', 'F1', 'precision', 'recall']
         total_metrics = collections.defaultdict(dict)
@@ -138,7 +138,6 @@ def main():
 
         allele_list = ['A0201']
         total = 0
-        num = 14
         for allele in allele_list:
             filename = 'combined-test-data/'+ allele + '.csv'
             predictions = read_predictions(filename)
