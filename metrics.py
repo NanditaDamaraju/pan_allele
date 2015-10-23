@@ -143,7 +143,7 @@ def main():
             predictions = read_predictions(filename)
             peptides = predictions.keys()
             for peptide in peptides:
-                predictions[peptide]['mhcflurry'] = 20000*(1-make_prediction(peptide, allele_sequence_data[allele], graph))
+                predictions[peptide]['mhcflurry'] = 20000**(1-make_prediction(peptide, allele_sequence_data[allele], graph))
                 #print peptide, predictions[peptide]
             df_pred = pd.DataFrame(predictions)
             Y_true = np.array(df_pred.loc['meas'])
