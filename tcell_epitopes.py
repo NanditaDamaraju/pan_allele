@@ -98,30 +98,27 @@ initial_weights = graph.get_weights()
 
 
 
-##Load graph
-graph.set_weights(initial_weights)
-graph.load_weights('weights/weights_' + pred + '/weights14')
-metrics = ['AUC', 'ACC', 'F1', 'precision', 'recall']
-total_metrics = collections.defaultdict(dict)
+##Load graph 
+    graph.set_weights(initial_weights)
+    graph.load_weights('weights/weights_' + pred + '/weights14')
+    metrics = ['AUC', 'ACC', 'F1', 'precision', 'recall']
+    total_metrics = collections.defaultdict(dict)
 
-total = 0
-num = 14
-
-
-predictions = read_predictions('paper_data/iedb-tcell-2009-negative.csv','paper_data/iedb-tcell-2009-positive.csv')
+    total = 0
+    predictions = read_predictions('paper_data/iedb-tcell-2009-negative.csv','paper_data/iedb-tcell-2009-positive.csv')
 
 
-allele_list = sorted(predictions.keys())
+    allele_list = sorted(predictions.keys())
 
-for allele in allele_list:
+    for allele in allele_list:
 
-    Y_true = []
-    Y_pred = []
-    peptides = predictions[allele].keys()
-    for peptide in peptides:
-        if(len(peptide)>7 and len(peptide)<12):
-            #print allele, peptide, predictions[allele][peptide], 20000**(1-make_prediction(peptide, allele_sequence_data[allele], graph))
-            Y_true.append( predictions[allele][peptide])
-            Y_pred.append(make_prediction(peptide, allele_sequence_data[allele], graph))
-    print "\n=====", allele, sum(Y_true), len(Y_true), "===="
-    print scores(Y_true, Y_pred)
+        Y_true = []
+        Y_pred = []
+        peptides = predictions[allele].keys()
+        for peptide in peptides:
+            if(len(peptide)>7 and len(peptide)<12):
+                #print allele, peptide, predictions[allele][peptide], 20000**(1-make_prediction(peptide, allele_sequence_data[allele], graph))
+                Y_true.append( predictions[allele][peptide])
+                Y_pred.append(make_prediction(peptide, allele_sequence_data[allele], graph))
+        print "=====", allele, sum(Y_true), len(Y_true), "===="
+        print scores(Y_true, Y_pred)
