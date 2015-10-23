@@ -101,7 +101,7 @@ initial_weights = graph.get_weights()
 ##Load graph
 for num in range(0,30):
     #graph.set_weights(initial_weights)
-    #graph.load_weights('weights/weights_' + pred + '/weights' + str(num))
+    graph.load_weights('weights/weights_' + pred + '/weights' + str(num))
     metrics = ['AUC', 'ACC', 'F1', 'precision', 'recall']
     total_metrics = collections.defaultdict(dict)
 
