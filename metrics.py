@@ -95,7 +95,6 @@ def main():
     remove_residues = False
     pred = sys.argv[1]
     cutoff = 0
-
     if (pred[:3] == 'ffn'):
         remove_residues = True
         cutoff = hyperparameters['cutoff'][0]
@@ -103,6 +102,7 @@ def main():
     create_fasta_file(path, remove_residues = remove_residues, consensus_cutoff =cutoff)
     mhc_sequence_fasta_file = 'pan_allele/files/pseudo/pseudo_sequences.fasta'
     allele_sequence_data, max_allele_length = load_allele_sequence_data(mhc_sequence_fasta_file)
+    print max_allele_length
 
     if (pred == 'ffn_concat'):
         graph = build_graph_native_sequence_model(hyperparameters=hyperparameters, maxlen_mhc = max_allele_length)
