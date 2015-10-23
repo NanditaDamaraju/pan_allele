@@ -111,7 +111,7 @@ num = 14
 predictions = read_predictions('paper_data/iedb-tcell-2009-negative.csv','paper_data/iedb-tcell-2009-positive.csv')
 
 
-allele_list = ['A0201']
+allele_list = predictions.keys()
 print allele_list
 
 for allele in allele_list:
@@ -119,10 +119,10 @@ for allele in allele_list:
     Y_true = []
     Y_pred = []
     print allele
-    peptides = ['LLFGYPVYV','FLPSDFFPSV','ILDDNLYKV']
+    peptides = predictions[allele].keys()
     for peptide in peptides:
         if(len(peptide)>7 and len(peptide)<12):
-            print allele, peptide, predictions[allele][peptide], 20000**(1-make_prediction(peptide, allele_sequence_data[allele], graph))
+            #print allele, peptide, predictions[allele][peptide], 20000**(1-make_prediction(peptide, allele_sequence_data[allele], graph))
             Y_true.append( predictions[allele][peptide])
             Y_pred.append(make_prediction(peptide, allele_sequence_data[allele], graph))
     print "\n=====", allele, sum(Y_true), len(Y_true), "===="
