@@ -124,4 +124,4 @@ for allele in allele_list:
             Y_true.append( predictions[allele][peptide])
             Y_pred.append(make_prediction(peptide, allele_sequence_data[allele], graph))
     print "\n=====", allele, sum(Y_true), len(Y_true), "===="
-    print scores(Y_true, Y_pred), '\n\n'
+    print scores(Y_true, Y_pred)
