@@ -94,7 +94,6 @@ def main():
     #hyperparameters = {'filter_length': [3, 4], 'nb_filter': [67, 92], 'mult_size': [32, 10], 'layer_size': [ 128, 92, 65]}
     remove_residues = False
     pred = sys.argv[1]
-
     cutoff = 0
 
     if (pred[:3] == 'ffn'):

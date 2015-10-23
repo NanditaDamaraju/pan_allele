@@ -18,7 +18,7 @@ import csv
 max_ic50 = 20000
 ic50_cutoff = 500
 log_transformed_ic50_cutoff = 1 - np.log(ic50_cutoff)/np.log(max_ic50)
-print log_transformed_ic50_cutoff
+
 
 
 def scores(Y_true_binary, Y_pred_log):
@@ -98,9 +98,10 @@ initial_weights = graph.get_weights()
 
 
 
-##Load graph 
-    graph.set_weights(initial_weights)
-    graph.load_weights('weights/weights_' + pred + '/weights14')
+##Load graph
+for num in range(0,30):
+    #graph.set_weights(initial_weights)
+    #graph.load_weights('weights/weights_' + pred + '/weights' + str(num))
     metrics = ['AUC', 'ACC', 'F1', 'precision', 'recall']
     total_metrics = collections.defaultdict(dict)
 
@@ -109,16 +110,16 @@ initial_weights = graph.get_weights()
 
 
     allele_list = sorted(predictions.keys())
-
+    allele_list[:] = [x for x in allele_list if not x.startswith('C')]
+    Y_true = []
+    Y_pred = []
     for allele in allele_list:
 
-        Y_true = []
-        Y_pred = []
         peptides = predictions[allele].keys()
         for peptide in peptides:
             if(len(peptide)>7 and len(peptide)<12):
                 #print allele, peptide, predictions[allele][peptide], 20000**(1-make_prediction(peptide, allele_sequence_data[allele], graph))
                 Y_true.append( predictions[allele][peptide])
                 Y_pred.append(make_prediction(peptide, allele_sequence_data[allele], graph))
-        print "=====", allele, sum(Y_true), len(Y_true), "===="
-        print scores(Y_true, Y_pred)
+        #print "=====", allele, sum(Y_true), len(Y_true), "===="
+    print num, scores(Y_true, Y_pred)
