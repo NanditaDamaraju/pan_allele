@@ -66,7 +66,7 @@ def save_ffn(hyperparameters, batch_size=32, lr=0.001):
     graph.fit(
                         {'peptide':peptide_train, 'mhc':mhc_train, 'output': Y_train},
                         batch_size=batch_size,
-                        nb_epoch=36,
+                        nb_epoch=64,
                         verbose = 1,
                         callbacks=[history]
         )
