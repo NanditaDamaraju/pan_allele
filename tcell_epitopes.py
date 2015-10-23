@@ -111,14 +111,12 @@ num = 14
 predictions = read_predictions('paper_data/iedb-tcell-2009-negative.csv','paper_data/iedb-tcell-2009-positive.csv')
 
 
-allele_list = predictions.keys()
-print allele_list
+allele_list = sorted(predictions.keys())
 
 for allele in allele_list:
 
     Y_true = []
     Y_pred = []
-    print allele
     peptides = predictions[allele].keys()
     for peptide in peptides:
         if(len(peptide)>7 and len(peptide)<12):
