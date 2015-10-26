@@ -146,7 +146,7 @@ def main():
                 #print peptide, predictions[peptide]
             df_pred = pd.DataFrame(predictions)
             Y_true = np.array(df_pred.loc['meas'])
-            #print "\n=====", allele, sum(Y_true <= 500), len(Y_true), "===="
+            print "\n=====", allele, sum(Y_true <= 500), len(Y_true), "===="
 
             for val in predictors:
                 Y_pred = np.array(df_pred.loc[val])

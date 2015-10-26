@@ -99,9 +99,11 @@ initial_weights = graph.get_weights()
 
 
 ##Load graph
-for num in range(0,36):
+for epoch in range(0,64):
+    batch_size = 64s
+    lr = 0.001
     #graph.set_weights(initial_weights)
-    graph.load_weights('weights/weights_' + pred + '/weights' + str(num))
+    graph.load_weights('weights/weights_ffn_mult/weights' + str(batch_size)+ '_' + str(lr) + '_'  + str(epoch) )
     metrics = ['AUC', 'ACC', 'F1', 'precision', 'recall']
     total_metrics = collections.defaultdict(dict)
 

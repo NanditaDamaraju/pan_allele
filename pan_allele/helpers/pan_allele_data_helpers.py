@@ -161,4 +161,11 @@ def get_model_data(allele_list,
         Y_combined[index:end_index] = allele_binding_data[allele][0]
         index+=len(peptides)
 
-    return X_p, X_mhc, Y_combined
+
+    arr = np.arange(len(X_p))
+    np.random.shuffle(arr)
+    X_p_shuffled = X_p[arr]
+    X_mhc_shuffled = X_mhc[arr]
+    log_binding_values_shuffled = Y_combined[arr]
+
+    return X_p_shuffled, X_mhc_shuffled, log_binding_values_shuffled
