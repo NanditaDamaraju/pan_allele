@@ -170,6 +170,7 @@ def main():
         #Initialize metrics to 0
         total_metrics = collections.defaultdict(dict)
 
+        Y_true_all = []
         for val in predictors:
                 total_metrics[val] = 0
 
