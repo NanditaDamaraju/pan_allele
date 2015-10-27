@@ -162,7 +162,7 @@ def main():
     for num in range(1,40):
         lr = 0.001
         batch_size = 64
-        graph.load_weights('weights/weights_ffn_mult/weights' + str(num))
+        graph.load_weights('weights/weights_ffn_mult/weights' + +str(batch_size) + '_' + str(lr) + '_' + str(num))
 
 
         predictors = ['mhcflurry', 'netmhcpan', 'netmhc', 'smmpmbec_cpp']
@@ -188,8 +188,7 @@ def main():
         for allele in allele_list:
 
             filename = 'combined-test-data/'+ allele + '.csv'
-            predictions = read_predictions(filename)
-
+            predictions = read_blind_predictions(filename)
             peptides = predictions.keys()
             for peptide in peptides:
                 predictions[peptide]['mhcflurry'] = 20000**(1-make_prediction(peptide, allele_sequence_data[allele], graph))
