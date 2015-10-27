@@ -13,21 +13,30 @@ from pan_allele.helpers.convolution_model import convolution_graph_matrix
 from pan_allele.helpers.sequence_encoding import padded_indices
 from pan_allele.helpers.amino_acid import amino_acid_letter_indices
 from pan_allele.helpers.generate_pseudo_sequences import create_fasta_file
+from metrics import read_tcell_predictions, make_prediction
 import keras
+import collections
 from sys import argv
+
 
 
 
 class LossHistory(keras.callbacks.Callback):
 
-    def metrics(self, batch_size, lr):
+    def metrics(self, batch_size, lr, peptide_list, mhc_list, Y_true_binary):
         self.batch_size = batch_size
         self.lr = lr
+        self.peptides = peptide_list
+        self.mhc = mhc_list
+        self.Y_true = Y_true_binary
+
 
     def on_epoch_end(self, epoch, logs={}):
         if (epoch%3 == 0):
-            model_save = self.model
-            model_save.save_weights('weights/weights_conv/weights' + str(self.batch_size)+ '_' + str(self.lr) + '_'  + str(epoch),overwrite=True)
+            Y_pred = self.model.predict({'peptide':self.peptides,'mhc':self.mhc})['output']
+            print epoch, scores(self.Y_true, Y_pred)
+
+
 
 def normalize_allele_name(allele_name):
     allele_name = allele_name.upper()
@@ -42,6 +51,8 @@ def normalize_allele_name(allele_name):
     for pattern in patterns:
         allele_name = allele_name.replace(pattern, "")
     return allele_name
+
+
 
 def save_ffn(hyperparameters, batch_size=32, lr=0.001):
 
@@ -114,9 +125,31 @@ def main():
     batch_sizes = [32, 64, 128, 256]
     learning_rates = [ 0.001, 0.01, 0.0001]
 
+    predictions = read_tcell_predictions('paper_data/iedb-tcell-2009-negative.csv','paper_data/iedb-tcell-2009-positive.csv')
+    mhc_sequence_fasta_file = 'pan_allele/files/pseudo/pseudo_sequences.fasta'
+    allele_sequence_data, max_allele_length = load_allele_sequence_data(mhc_sequence_fasta_file)
+
+
+    allele_list = sorted(predictions.keys())
+    allele_list[:] = [x for x in allele_list if not x.startswith('C')]
+
     for batch_size in batch_sizes:
         for lr in learning_rates:
-            save_cnn(hyperparameters, batch_size, lr)
+
+            peptide_list = []
+            mhc_list = []
+            Y_true = []
+            for allele in allele_list:
+                for peptide in predictions[allele].keys():
+                    if(len(peptide)>7 and len(peptide)<12)
+                        peptides, mhcs, pred = make_prediction(peptide, allele_sequence_data[allele])
+                        peptide_list.append(peptides)
+                        mhc_list.append(mhcs)
+                        Y_true.append(prediction)
+
+                #print "=====", allele, sum(Y_true), len(Y_true), "===="
+            print epoch, scores(Y_true, Y_pred)
+
 
 if __name__ == "__main__":
 

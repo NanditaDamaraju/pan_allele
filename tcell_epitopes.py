@@ -35,39 +35,20 @@ def scores(Y_true_binary, Y_pred_log):
     recall = 0
     length = 0
 
+    ACC = accuracy_score(Y_true_binary, Y_pred_binary)
+    F1 = f1_score(Y_true_binary, Y_pred_binary)
+    recall = recall_score(Y_true_binary, Y_pred_binary)
+    precision = precision_score(Y_true_binary, Y_pred_binary)
+    length = len(Y_true)
+
     if(Y_true_binary.all() or not Y_true_binary.any()):
-        #print "Skipping as all labels are the same"
-        ACC = accuracy_score(Y_true_binary, Y_pred_binary)
-        F1 = f1_score(Y_true_binary, Y_pred_binary)
-        recall = recall_score(Y_true_binary, Y_pred_binary)
-        precision = precision_score(Y_true_binary, Y_pred_binary)
+        print "Skipping as all labels are the same"
     else:
         AUC = roc_auc_score(Y_true_binary, Y_pred_log)
 
-        ACC = accuracy_score(Y_true_binary, Y_pred_binary)
-        F1 = f1_score(Y_true_binary, Y_pred_binary)
-        recall = recall_score(Y_true_binary, Y_pred_binary)
-        precision = precision_score(Y_true_binary, Y_pred_binary)
-        length = len(Y_true)
     return length, AUC, ACC, F1, precision, recall
 
-def read_predictions(file0, file1):
-    predictions = collections.defaultdict(dict)
-    with open(file0, 'rb') as csvfile:
-        records = csv.reader(csvfile)
-        header = records.next()
-        for row in records:
-            peptide = row[2]
-            allele = row[1]
-            predictions[allele][peptide] = 0
-    with open(file1, 'rb') as csvfile:
-        records = csv.reader(csvfile)
-        header = records.next()
-        for row in records:
-            peptide = row[2]
-            allele = row[1]
-            predictions[allele][peptide] = 1
-    return predictions
+
 
 #hyperparameters = {'cutoff':[ 0.33711265], 'dropouts': [ 0. ,  0.0254818 ,  0.10669398], 'sizes': [ 53,  82, 103,  74, 106, 59]}
 ##hyperparameters feed forward network concat
@@ -104,10 +85,7 @@ for epoch in range(0,64):
     lr = 0.001
     #graph.set_weights(initial_weights)
     graph.load_weights('weights/weights_ffn_mult/weights' + str(batch_size)+ '_' + str(lr) + '_'  + str(epoch) )
-    metrics = ['AUC', 'ACC', 'F1', 'precision', 'recall']
-    total_metrics = collections.defaultdict(dict)
 
-    total = 0
     predictions = read_predictions('paper_data/iedb-tcell-2009-negative.csv','paper_data/iedb-tcell-2009-positive.csv')
 
 

@@ -39,19 +39,22 @@ def scores(Y_true, Y_pred):
     precision =0
     recall = 0
     length = 0
+    Y_pred_binary = Y_pred <= ic50_cutoff
+    ACC = accuracy_score(Y_true_binary, Y_pred_binary)
+    F1 = f1_score(Y_true_binary, Y_pred_binary)
+    recall = recall_score(Y_true_binary, Y_pred_binary)
+    precision = precision_score(Y_true_binary, Y_pred_binary)
+    length = len(Y_true)
+
+
     if(Y_true_binary.all() or not Y_true_binary.any()):
         print "Skipping as all labels are the same"
     else:
         AUC = roc_auc_score(Y_true_binary, Y_pred_log)
-        Y_pred_binary = Y_pred <= ic50_cutoff
-        ACC = accuracy_score(Y_true_binary, Y_pred_binary)
-        F1 = f1_score(Y_true_binary, Y_pred_binary)
-        recall = recall_score(Y_true_binary, Y_pred_binary)
-        precision = precision_score(Y_true_binary, Y_pred_binary)
-        length = len(Y_true)
+
     return length, AUC, ACC, F1, precision, recall
 
-def read_predictions(filename):
+def read_blind_predictions(filename):
     predictions = collections.defaultdict(dict)
     with open(filename, 'rb') as csvfile:
         records = csv.reader(csvfile)
@@ -64,37 +67,77 @@ def read_predictions(filename):
                         pass
     return predictions
 
-def make_prediction(peptide, allele_sequence, model):
+#file0 negative prediction and file 1 positive predicitons
+def read_tcell_predictions(file0, file1):
+    predictions = collections.defaultdict(dict)
+    with open(file0, 'rb') as csvfile:
+        records = csv.reader(csvfile)
+        header = records.next()
+        for row in records:
+            peptide = row[2]
+            allele = row[1]
+            predictions[allele][peptide] = 0
+    with open(file1, 'rb') as csvfile:
+        records = csv.reader(csvfile)
+        header = records.next()
+        for row in records:
+            peptide = row[2]
+            allele = row[1]
+            predictions[allele][peptide] = 1
+    return predictions
+
+'''takes a single peptide and allele sequence as input
+    along with the model for  prediction
+    and returns the predicted probability of binding'''
+
+def make_prediction(peptide, allele_sequence, model=None):
     mhc_seq = padded_indices([allele_sequence],
                                     add_start_symbol=False,
                                     add_end_symbol=False,
                                     index_dict=amino_acid_letter_indices)
+
+
+    #returns an array of index encoded peptide/peptides depending on peptide length
+
     X_p = padded_indices(format_peptide(peptide),
                             add_start_symbol=False,
                             add_end_symbol=False,
                             index_dict=amino_acid_letter_indices)
+
+    #tiling the mhc in case the peptide is more than a length of 9
+
     mhc_seq = np.tile(mhc_seq,(len(X_p),1))
-    preds = model.predict({'peptide':X_p,'mhc':mhc_seq})['output']
-    #print format_peptide(peptide), preds
-    preds = np.mean(preds)
+    preds = 0
+
+    #mean of the predicted outputs in case peptide is more than length of 9
+
+    if(model):
+        preds = model.predict({'peptide':X_p,'mhc':mhc_seq})['output']
+        preds = np.mean(preds)
 
     return float(preds)
 
 
 
-
-
-
 def main():
 
-    #hyperparameters = {'cutoff':[ 0.33711265], 'dropouts': [ 0. ,  0.0254818 ,  0.10669398], 'sizes': [ 53,  82, 103,  74, 106, 59]}
     ##hyperparameters feed forward network concat
+    #hyperparameters = {'cutoff':[ 0.33711265], 'dropouts': [ 0. ,  0.0254818 ,  0.10669398], 'sizes': [ 53,  82, 103,  74, 106, 59]}
+
+    ##hyperparameters feed forward network matrix multiply
     hyperparameters  = {'cutoff':[ 0], 'dropouts': [ 0.17621593,  0. ,  0.   ], 'sizes': [ 16, 128,  99, 128, 102], 'mult_size': [32, 15]}
+
     ##hyperparameters convolutional network matrix multiply
     #hyperparameters = {'filter_length': [3, 4], 'nb_filter': [67, 92], 'mult_size': [32, 10], 'layer_size': [ 128, 92, 65]}
-    remove_residues = False
+
+    #prediction input either "conv", "ffn_concat", "ffn_mult"
     pred = sys.argv[1]
+
+    #remove residues to create pseudo sequences
+    remove_residues = False
+    #consensus cutoff to determine level of consensus to ignore for a position in the mhc sequence
     cutoff = 0
+    #remove residues if the predictor is feed forward
     if (pred[:3] == 'ffn'):
         remove_residues = True
         cutoff = hyperparameters['cutoff'][0]
@@ -102,6 +145,8 @@ def main():
     create_fasta_file(path, remove_residues = remove_residues, consensus_cutoff =cutoff)
     mhc_sequence_fasta_file = 'pan_allele/files/pseudo/pseudo_sequences.fasta'
     allele_sequence_data, max_allele_length = load_allele_sequence_data(mhc_sequence_fasta_file)
+
+
     print max_allele_length
 
     if (pred == 'ffn_concat'):
@@ -112,18 +157,20 @@ def main():
         graph = convolution_graph_matrix(hyperparameters = hyperparameters, maxlen_mhc = max_allele_length )
     initial_weights = graph.get_weights()
 
-
-
-
-
     ##Load graph
 
-    for num in range(1,20):
-
+    for num in range(1,40):
+        lr = 0.001
+        batch_size = 64
         graph.load_weights('weights/weights_ffn_mult/weights' + str(num))
+
+
         predictors = ['mhcflurry', 'netmhcpan', 'netmhc', 'smmpmbec_cpp']
         metrics = ['AUC', 'ACC', 'F1', 'precision', 'recall']
+
+        #Initialize metrics to 0
         total_metrics = collections.defaultdict(dict)
+
         for val in predictors:
             for metric in metrics:
                 total_metrics[val][metric] = 0
@@ -137,16 +184,18 @@ def main():
 
         #allele_list = ['A0201']
         total = 0
+
         for allele in allele_list:
+
             filename = 'combined-test-data/'+ allele + '.csv'
             predictions = read_predictions(filename)
+
             peptides = predictions.keys()
             for peptide in peptides:
                 predictions[peptide]['mhcflurry'] = 20000**(1-make_prediction(peptide, allele_sequence_data[allele], graph))
-                #print peptide, predictions[peptide]
             df_pred = pd.DataFrame(predictions)
             Y_true = np.array(df_pred.loc['meas'])
-            print "\n=====", allele, sum(Y_true <= 500), len(Y_true), "===="
+            #print "\n=====", allele, sum(Y_true <= 500), len(Y_true), "===="
 
             for val in predictors:
                 Y_pred = np.array(df_pred.loc[val])
@@ -155,7 +204,9 @@ def main():
                 for idx, metric in enumerate(metrics):
                     total_metrics[val][metric] += calculated_metrics[idx+1] * calculated_metrics[0]
             total+=calculated_metrics[0]
+
         print "\n",num
+
         for val in predictors:
             print "\n",val
             for metric in metrics:
