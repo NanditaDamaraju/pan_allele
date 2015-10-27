@@ -161,19 +161,17 @@ def main():
 
     for num in range(1,40):
         lr = 0.001
-        batch_size = 64
+        batch_size = 32
         graph.load_weights('weights/weights_ffn_mult/weights' + str(batch_size) + '_' + str(lr) + '_' + str(num))
 
 
         predictors = ['mhcflurry', 'netmhcpan', 'netmhc', 'smmpmbec_cpp']
-        metrics = ['AUC', 'ACC', 'F1', 'precision', 'recall']
 
         #Initialize metrics to 0
         total_metrics = collections.defaultdict(dict)
 
         for val in predictors:
-            for metric in metrics:
-                total_metrics[val][metric] = 0
+                total_metrics[val] = 0
 
 
         allele_list = ['A0101',	    'A0201',	'A0202',    'A0203',	'A0206',	'A0301',	'A1101',	'A2301',	'A2402',	'A2501',	'A2601',
@@ -183,8 +181,6 @@ def main():
                         'B5301',	'B5401',	'B5701',	'B5801'	]
 
         #allele_list = ['A0201']
-        total = 0
-
         for allele in allele_list:
 
             filename = 'combined-test-data/'+ allele + '.csv'
@@ -193,24 +189,24 @@ def main():
             for peptide in peptides:
                 predictions[peptide]['mhcflurry'] = 20000**(1-make_prediction(peptide, allele_sequence_data[allele], graph))
             df_pred = pd.DataFrame(predictions)
-            Y_true = np.array(df_pred.loc['meas'])
+
+
+            Y_true_allele = np.array(df_pred.loc['meas'])
+            Y_true_all.append(Y_true_allele)
+
             #print "\n=====", allele, sum(Y_true <= 500), len(Y_true), "===="
 
             for val in predictors:
-                Y_pred = np.array(df_pred.loc[val])
-                calculated_metrics = scores(Y_true, Y_pred)
-                #print val, calculated_metrics
-                for idx, metric in enumerate(metrics):
-                    total_metrics[val][metric] += calculated_metrics[idx+1] * calculated_metrics[0]
-            total+=calculated_metrics[0]
+                Y_pred_allele = np.array(df_pred.loc[val])
+                calculated_metrics = scores(Y_true_allele, Y_pred_allele)
+                total_metrics[val].append(Y_pred_allele)
 
         print "\n",num
 
         for val in predictors:
             print "\n",val
-            for metric in metrics:
-                print metric, "=", total_metrics[val][metric]/total,
-
+            scores_val = scores(Y_true_all, total_metrics[val])
+            print scores
 
 if __name__ == "__main__":
     main()
