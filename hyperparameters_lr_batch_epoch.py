@@ -24,8 +24,9 @@ class LossHistory(keras.callbacks.Callback):
         self.lr = lr
 
     def on_epoch_end(self, epoch, logs={}):
-        model_save = self.model
-        model_save.save_weights('weights/weights_conv/weights' + str(self.batch_size)+ '_' + str(self.lr) + '_'  + str(epoch),overwrite=True)
+        if (epoch%3 == 0):
+            model_save = self.model
+            model_save.save_weights('weights/weights_conv/weights' + str(self.batch_size)+ '_' + str(self.lr) + '_'  + str(epoch),overwrite=True)
 
 def normalize_allele_name(allele_name):
     allele_name = allele_name.upper()
@@ -103,9 +104,9 @@ def save_cnn():
 
 
 def main():
-    hyperparameters =  {'cutoff':[ 0], 'dropouts': [ 0.17621593,  0.        ,  0.   ], 'sizes': [ 16, 128,  99, 128, 102], 'mult_size': [32, 15]}
+    #hyperparameters =  {'cutoff':[ 0], 'dropouts': [ 0.17621593,  0.        ,  0.   ], 'sizes': [ 16, 128,  99, 128, 102], 'mult_size': [32, 15]}
     #hyperparameters = {'cutoff':[ 0.33711265], 'dropouts': [ 0. ,  0.0254818 ,  0.10669398], 'sizes': [ 53,  82, 103,  74, 106, 59]}
-    #hyperparameters = {'filter_length': [3, 4], 'nb_filter': [67, 92], 'mult_size': [32, 10], 'layer_size': [ 128, 92, 65]}
+    hyperparameters = {'filter_length': [3, 4], 'nb_filter': [67, 92], 'mult_size': [32, 10], 'layer_size': [ 128, 92, 65]}
 
     batch_sizes = [32, 64, 128, 256]
     learning_rates = [ 0.001, 0.01, 0.0001]
