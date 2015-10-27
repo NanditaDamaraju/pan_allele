@@ -58,7 +58,7 @@ def save_ffn(hyperparameters, batch_size=32, lr=0.001):
                                                         mhc_dense = None
                                                         )
     #graph = build_graph_native_sequence_model(hyperparameters=hyperparameters, maxlen_mhc=max_allele_length)
-    
+
     optimizer = keras.optimizers.RMSprop(lr=lr, rho=0.9, epsilon=1e-6)
     graph = ffn_matrix(hyperparameters= hyperparameters, maxlen_mhc=max_allele_length, optimizer = optimizer)
     history = LossHistory()
@@ -107,7 +107,7 @@ def main():
     #hyperparameters = {'cutoff':[ 0.33711265], 'dropouts': [ 0. ,  0.0254818 ,  0.10669398], 'sizes': [ 53,  82, 103,  74, 106, 59]}
     #hyperparameters = {'filter_length': [3, 4], 'nb_filter': [67, 92], 'mult_size': [32, 10], 'layer_size': [ 128, 92, 65]}
 
-    batch_sizes = [32]
+    batch_sizes = [64]
     learning_rates = [ 0.001]
 
     for batch_size in batch_sizes:
