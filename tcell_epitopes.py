@@ -124,4 +124,4 @@ for epoch in range(0,64):
                 Y_true.append( predictions[allele][peptide])
                 Y_pred.append(make_prediction(peptide, allele_sequence_data[allele], graph))
         #print "=====", allele, sum(Y_true), len(Y_true), "===="
-    print num, scores(Y_true, Y_pred)
+    print epoch, scores(Y_true, Y_pred)
