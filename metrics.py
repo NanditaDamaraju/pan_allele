@@ -14,10 +14,13 @@ import numpy as np
 import collections
 import pandas as pd
 import csv
+
+
 max_ic50 = 20000
 ic50_cutoff = 500
 log_transformed_ic50_cutoff = 1 - np.log(ic50_cutoff)/np.log(max_ic50)
 
+#
 def format_peptide(peptide):
     if(len(peptide) == 9):
         return [peptide]

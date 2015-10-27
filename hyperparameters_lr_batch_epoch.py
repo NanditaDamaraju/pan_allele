@@ -23,18 +23,14 @@ from sys import argv
 
 class LossHistory(keras.callbacks.Callback):
 
-    def metrics(self, batch_size, lr, peptide_list, mhc_list, Y_true_binary):
+    def metrics(self, batch_size, lr):
         self.batch_size = batch_size
         self.lr = lr
-        self.peptides = peptide_list
-        self.mhc = mhc_list
-        self.Y_true = Y_true_binary
-
 
     def on_epoch_end(self, epoch, logs={}):
-        if (epoch%3 == 0):
-            Y_pred = self.model.predict({'peptide':self.peptides,'mhc':self.mhc})['output']
-            print epoch, scores(self.Y_true, Y_pred)
+        model_save = self.model
+        model_save.save_weights('weights/weights_ffn_mult/weights' + str(self.batch_size)+ '_' + str(self.lr) + '_'  + str(epoch),overwrite=True)
+
 
 
 
@@ -118,37 +114,16 @@ def save_cnn(hyperparameters, batch_size=32, lr=0.001):
 
 
 def main():
-    #hyperparameters =  {'cutoff':[ 0], 'dropouts': [ 0.17621593,  0.        ,  0.   ], 'sizes': [ 16, 128,  99, 128, 102], 'mult_size': [32, 15]}
+    hyperparameters =  {'cutoff':[ 0], 'dropouts': [ 0.17621593,  0.        ,  0.   ], 'sizes': [ 16, 128,  99, 128, 102], 'mult_size': [32, 15]}
     #hyperparameters = {'cutoff':[ 0.33711265], 'dropouts': [ 0. ,  0.0254818 ,  0.10669398], 'sizes': [ 53,  82, 103,  74, 106, 59]}
-    hyperparameters = {'filter_length': [3, 4], 'nb_filter': [67, 92], 'mult_size': [32, 10], 'layer_size': [ 128, 92, 65]}
+    #hyperparameters = {'filter_length': [3, 4], 'nb_filter': [67, 92], 'mult_size': [32, 10], 'layer_size': [ 128, 92, 65]}
 
-    batch_sizes = [32, 64, 128, 256]
+    batch_sizes = [16, 32, 64, 128, 256]
     learning_rates = [ 0.001, 0.01, 0.0001]
-
-    predictions = read_tcell_predictions('paper_data/iedb-tcell-2009-negative.csv','paper_data/iedb-tcell-2009-positive.csv')
-    mhc_sequence_fasta_file = 'pan_allele/files/pseudo/pseudo_sequences.fasta'
-    allele_sequence_data, max_allele_length = load_allele_sequence_data(mhc_sequence_fasta_file)
-
-
-    allele_list = sorted(predictions.keys())
-    allele_list[:] = [x for x in allele_list if not x.startswith('C')]
 
     for batch_size in batch_sizes:
         for lr in learning_rates:
-
-            peptide_list = []
-            mhc_list = []
-            Y_true = []
-            for allele in allele_list:
-                for peptide in predictions[allele].keys():
-                    if(len(peptide)>7 and len(peptide)<12)
-                        peptides, mhcs, pred = make_prediction(peptide, allele_sequence_data[allele])
-                        peptide_list.append(peptides)
-                        mhc_list.append(mhcs)
-                        Y_true.append(prediction)
-
-                #print "=====", allele, sum(Y_true), len(Y_true), "===="
-            print epoch, scores(Y_true, Y_pred)
+            save_ffn(hyperparameters, batch_size, lr)
 
 
 if __name__ == "__main__":
