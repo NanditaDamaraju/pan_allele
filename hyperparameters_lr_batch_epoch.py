@@ -25,7 +25,7 @@ class LossHistory(keras.callbacks.Callback):
 
     def on_epoch_end(self, epoch, logs={}):
         model_save = self.model
-        model_save.save_weights('weights/weights_ffn_mult/weights' + str(self.batch_size)+ '_' + str(self.lr) + '_'  + str(epoch),overwrite=True)
+        model_save.save_weights('weights/weights_conv_mult/weights' + str(self.batch_size)+ '_' + str(self.lr) + '_'  + str(epoch),overwrite=True)
 
 def normalize_allele_name(allele_name):
     allele_name = allele_name.upper()
@@ -107,12 +107,12 @@ def main():
     #hyperparameters = {'cutoff':[ 0.33711265], 'dropouts': [ 0. ,  0.0254818 ,  0.10669398], 'sizes': [ 53,  82, 103,  74, 106, 59]}
     #hyperparameters = {'filter_length': [3, 4], 'nb_filter': [67, 92], 'mult_size': [32, 10], 'layer_size': [ 128, 92, 65]}
 
-    batch_sizes = [64]
-    learning_rates = [ 0.001]
+    batch_sizes = [32, 64, 128, 256]
+    learning_rates = [ 0.001, 0.01, 0.0001]
 
     for batch_size in batch_sizes:
         for lr in learning_rates:
-            save_ffn(hyperparameters, batch_size, lr)
+            save_cnn(hyperparameters, batch_size, lr)
 
 if __name__ == "__main__":
 
