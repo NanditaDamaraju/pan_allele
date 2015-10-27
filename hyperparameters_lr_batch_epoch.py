@@ -96,6 +96,7 @@ def save_cnn(hyperparameters, batch_size=32, lr=0.001):
     optimizer = keras.optimizers.RMSprop(lr=lr, rho=0.9, epsilon=1e-6)
     graph = convolution_graph_matrix(hyperparameters, maxlen_mhc=max_allele_length, optimizer=optimizer)
     history = LossHistory()
+    history.metrics(batch_size, lr)
     graph.fit(
                         {'peptide':peptide_train, 'mhc':mhc_train, 'output': Y_train},
                         batch_size=batch_size,
