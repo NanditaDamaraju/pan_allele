@@ -74,7 +74,7 @@ def save_ffn(hyperparameters, batch_size=32, lr=0.001):
 
 def save_cnn(hyperparameters, batch_size=32, lr=0.001):
 
-    allele_groups, df = load_binding_data(path +'pan_allele/files/bdata.2009.mhci.public.1.txt')
+    allele_groups, df = load_binding_data('pan_allele/files/bdata.2009.mhci.public.1.txt')
 
     create_fasta_file(path, remove_residues = False, consensus_cutoff =0)
     allele_sequence_data, max_allele_length = load_allele_sequence_data('pan_allele/files/pseudo/pseudo_sequences.fasta')
