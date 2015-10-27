@@ -72,7 +72,7 @@ def save_ffn(hyperparameters, batch_size=32, lr=0.001):
                         callbacks=[history]
         )
 
-def save_cnn():
+def save_cnn(hyperparameters, batch_size=32, lr=0.001):
 
     allele_groups, df = load_binding_data(path +'pan_allele/files/bdata.2009.mhci.public.1.txt')
 
@@ -90,13 +90,13 @@ def save_cnn():
                                                         )
 
 
-    graph = build_graph_native_sequence_model(hyperparameters=hyperparameters, maxlen_mhc = max_sequence_length)
-
-    graph = convolution_graph_matrix(hyperparameters, maxlen_mhc=max_allele_length)
+    graph = build_graph_native_sequence_model(hyperparameters=hyperparameters, maxlen_mhc = max_allele_length)
+    optimizer = keras.optimizers.RMSprop(lr=lr, rho=0.9, epsilon=1e-6)
+    graph = convolution_graph_matrix(hyperparameters, maxlen_mhc=max_allele_length, optimizer=optimizer)
     history = LossHistory()
     graph.fit(
                         {'peptide':peptide_train, 'mhc':mhc_train, 'output': Y_train},
-                        batch_size=32,
+                        batch_size=batch_size,
                         nb_epoch=nb_epoch,
                         verbose = 1,
                         callbacks = [history]
