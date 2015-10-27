@@ -160,30 +160,41 @@ def main():
     ##Load graph
 
     for num in range(1,40):
+
+        predictors = ['mhcflurry', 'netmhcpan', 'netmhc', 'smmpmbec_cpp']
+
+
+
+
+        allele_list = ['A0101',	    'A0201',	'A0202',    'A0203',	'A0206',	'A0301',
+                       'A1101',	    'A2301',	'A2402',	'A2501',	'A2601',    'A2602',
+                       'A2603',	    'A2902',	'A3001',	'A3002',	'A3101',	'A3201',
+                       'A3301',	    'A6801',	'A6802',	'A6901',    'A8001',	'B0702',
+                       'B0801',	    'B0802',	'B0803',	'B1501',	'B1503',	'B1509',
+                       'B1517',	    'B1801',	'B2703',    'B2705',    'B3501',	'B3801',
+                       'B3901',	    'B4001',	'B4002',	'B4402',	'B4403',	'B4501',
+                       'B4601',	    'B5101',    'B5301',	'B5401',	'B5701',	'B5801'	]
+
+        #allele_list = ['A0201']
+
+        data_len = sum(len(read_blind_predictions('combined-test-data/'+ allele + '.csv').keys()) for allele in allele_list)
+
+        Y_true_all = np.zeros(data_len)
+
+        #Initialize metrics to 0
+        total_metrics = collections.defaultdict(list)
+
+        for val in predictors:
+                total_metrics[val] =  np.zeros(data_len)
+
         lr = 0.001
         batch_size = 32
         graph.load_weights('weights/weights_ffn_mult/weights' + str(batch_size) + '_' + str(lr) + '_' + str(num))
 
-
-        predictors = ['mhcflurry', 'netmhcpan', 'netmhc', 'smmpmbec_cpp']
-
-        #Initialize metrics to 0
-        total_metrics = collections.defaultdict(dict)
-
-        Y_true_all = []
-        for val in predictors:
-                total_metrics[val] = 0
+        counter  = 0
 
 
-        allele_list = ['A0101',	    'A0201',	'A0202',    'A0203',	'A0206',	'A0301',	'A1101',	'A2301',	'A2402',	'A2501',	'A2601',
-                        'A2602',	'A2603',	'A2902',	'A3001',	'A3002',	'A3101',	'A3201',	'A3301',	'A6801',	'A6802',	'A6901',
-                        'A8001',	'B0702',	'B0801',	'B0802',	'B0803',	'B1501',	'B1503',	'B1509',	'B1517',	'B1801',	'B2703',
-                        'B2705',	'B3501',	'B3801',	'B3901',	'B4001',	'B4002',	'B4402',	'B4403',	'B4501',	'B4601',	'B5101',
-                        'B5301',	'B5401',	'B5701',	'B5801'	]
-
-        #allele_list = ['A0201']
         for allele in allele_list:
-
             filename = 'combined-test-data/'+ allele + '.csv'
             predictions = read_blind_predictions(filename)
             peptides = predictions.keys()
@@ -193,21 +204,27 @@ def main():
 
 
             Y_true_allele = np.array(df_pred.loc['meas'])
-            Y_true_all.append(Y_true_allele)
+            Y_true_all[counter:counter+len(peptides)] =  Y_true_allele
 
             #print "\n=====", allele, sum(Y_true <= 500), len(Y_true), "===="
 
             for val in predictors:
                 Y_pred_allele = np.array(df_pred.loc[val])
                 calculated_metrics = scores(Y_true_allele, Y_pred_allele)
-                total_metrics[val].append(Y_pred_allele)
+                total_metrics[val][counter:counter+len(peptides)] = (Y_pred_allele)
+
+            counter +=len(peptides)
+
+
+
 
         print "\n",num
 
         for val in predictors:
             print "\n",val
+            print len(Y_true_all), len(total_metrics[val])
             scores_val = scores(Y_true_all, total_metrics[val])
-            print scores
+            print scores_val
 
 if __name__ == "__main__":
     main()
