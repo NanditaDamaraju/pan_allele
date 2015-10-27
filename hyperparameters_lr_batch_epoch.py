@@ -118,11 +118,11 @@ def main():
     #hyperparameters = {'cutoff':[ 0.33711265], 'dropouts': [ 0. ,  0.0254818 ,  0.10669398], 'sizes': [ 53,  82, 103,  74, 106, 59]}
     #hyperparameters = {'filter_length': [3, 4], 'nb_filter': [67, 92], 'mult_size': [32, 10], 'layer_size': [ 128, 92, 65]}
 
-    batch_sizes = [16, 32, 64, 128, 256]
+    batch_sizes = [32, 64, 128, 256]
     learning_rates = [ 0.001, 0.01, 0.0001]
 
-    for batch_size in batch_sizes:
-        for lr in learning_rates:
+    for lr in learning_rates:
+        for batch_size in batch_sizes:
             save_ffn(hyperparameters, batch_size, lr)
 
 
