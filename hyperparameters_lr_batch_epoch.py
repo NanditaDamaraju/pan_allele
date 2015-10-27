@@ -58,7 +58,7 @@ def save_ffn(hyperparameters, batch_size=32, lr=0.001):
                                                         mhc_dense = None
                                                         )
     #graph = build_graph_native_sequence_model(hyperparameters=hyperparameters, maxlen_mhc=max_allele_length)
-
+    
     optimizer = keras.optimizers.RMSprop(lr=lr, rho=0.9, epsilon=1e-6)
     graph = ffn_matrix(hyperparameters= hyperparameters, maxlen_mhc=max_allele_length, optimizer = optimizer)
     history = LossHistory()

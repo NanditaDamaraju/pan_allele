@@ -100,7 +100,7 @@ initial_weights = graph.get_weights()
 
 ##Load graph
 for epoch in range(0,64):
-    batch_size = 64s
+    batch_size = 64
     lr = 0.001
     #graph.set_weights(initial_weights)
     graph.load_weights('weights/weights_ffn_mult/weights' + str(batch_size)+ '_' + str(lr) + '_'  + str(epoch) )
