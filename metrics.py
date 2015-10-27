@@ -162,7 +162,7 @@ def main():
     for num in range(1,40):
         lr = 0.001
         batch_size = 64
-        graph.load_weights('weights/weights_ffn_mult/weights' + +str(batch_size) + '_' + str(lr) + '_' + str(num))
+        graph.load_weights('weights/weights_ffn_mult/weights' + str(batch_size) + '_' + str(lr) + '_' + str(num))
 
 
         predictors = ['mhcflurry', 'netmhcpan', 'netmhc', 'smmpmbec_cpp']
