@@ -188,7 +188,7 @@ def main():
                 total_metrics[val] =  np.zeros(data_len)
 
         lr = 0.001
-        batch_size = 32
+        batch_size = 64
         graph.load_weights('weights/weights_ffn_mult/weights' + str(batch_size) + '_' + str(lr) + '_' + str(num))
 
         counter  = 0
