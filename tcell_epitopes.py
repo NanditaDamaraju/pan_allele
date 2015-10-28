@@ -62,6 +62,7 @@ if (pred == 'ffn_concat'):
     mhc_sequence_fasta_file = 'pan_allele/files/pseudo/pseudo_sequences.fasta'
     allele_sequence_data, max_allele_length = load_allele_sequence_data(mhc_sequence_fasta_file)
     graph = build_graph_native_sequence_model(hyperparameters=hyperparameters, maxlen_mhc = max_allele_length)
+
 elif(pred == 'ffn_mult'):
     hyperparameters  = {'cutoff':[ 0], 'dropouts': [ 0.17621593,  0. ,  0.   ], 'sizes': [ 16, 128,  99, 128, 102], 'mult_size': [32, 15]}
     create_fasta_file(path, remove_residues = True, consensus_cutoff =hyperparameters['cutoff'][0])
@@ -81,7 +82,7 @@ for epoch in range(0,64):
     batch_size = 32
     lr = 0.001
     #graph.set_weights(initial_weights)
-    graph.load_weights('weights/weights_ffn_concat/weights' + str(batch_size)+ '_' + str(lr) + '_'  + str(epoch) )
+    graph.load_weights('weights/weights_' + pred + '/weights' + str(batch_size)+ '_' + str(lr) + '_'  + str(epoch) )
 
     predictions = read_tcell_predictions('paper_data/iedb-tcell-2009-negative.csv','paper_data/iedb-tcell-2009-positive.csv')
 
