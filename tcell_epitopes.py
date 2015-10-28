@@ -10,7 +10,7 @@ from pan_allele.helpers.sequence_encoding import padded_indices
 from pan_allele.helpers.amino_acid import amino_acid_letter_indices, amino_acid_letters
 from keras.models import Graph
 from sklearn.metrics import roc_auc_score, f1_score, accuracy_score, precision_score, recall_score
-from metrics import format_peptide, make_prediction
+from metrics import format_peptide, make_prediction, read_tcell_predictions
 import numpy as np
 import collections
 import pandas as pd
@@ -50,12 +50,9 @@ def scores(Y_true_binary, Y_pred_log):
 
 
 
-#hyperparameters = {'cutoff':[ 0.33711265], 'dropouts': [ 0. ,  0.0254818 ,  0.10669398], 'sizes': [ 53,  82, 103,  74, 106, 59]}
 ##hyperparameters feed forward network concat
-hyperparameters  = {'cutoff':[ 0], 'dropouts': [ 0.17621593,  0. ,  0.   ], 'sizes': [ 16, 128,  99, 128, 102], 'mult_size': [32, 15]}
-##hyperparameters convolutional network matrix multiply
-#hyperparameters = {'filter_length': [3, 4], 'nb_filter': [67, 92], 'mult_size': [32, 10], 'layer_size': [ 128, 92, 65]}
-remove_residues = False
+###hyperparameters convolutional network matrix multiply
+#remove_residues = False
 pred = sys.argv[1]
 
 cutoff = 0
@@ -69,24 +66,24 @@ mhc_sequence_fasta_file = 'pan_allele/files/pseudo/pseudo_sequences.fasta'
 allele_sequence_data, max_allele_length = load_allele_sequence_data(mhc_sequence_fasta_file)
 
 if (pred == 'ffn_concat'):
+    hyperparameters = {'cutoff':[ 0.33711265], 'dropouts': [ 0. ,  0.0254818 ,  0.10669398], 'sizes': [ 53,  82, 103,  74, 106, 59]}
     graph = build_graph_native_sequence_model(hyperparameters=hyperparameters, maxlen_mhc = max_allele_length)
 elif(pred == 'ffn_mult'):
+    hyperparameters  = {'cutoff':[ 0], 'dropouts': [ 0.17621593,  0. ,  0.   ], 'sizes': [ 16, 128,  99, 128, 102], 'mult_size': [32, 15]}
     graph = ffn_matrix( hyperparameters=hyperparameters, maxlen_mhc = max_allele_length)
 elif(pred =='conv'):
+    hyperparameters = {'filter_length': [3, 4], 'nb_filter': [67, 92], 'mult_size': [32, 10], 'layer_size': [ 128, 92, 65]}
     graph = convolution_graph_matrix(hyperparameters = hyperparameters, maxlen_mhc = max_allele_length )
 initial_weights = graph.get_weights()
 
-
-
-
 ##Load graph
 for epoch in range(0,64):
-    batch_size = 64
+    batch_size = 32
     lr = 0.001
     #graph.set_weights(initial_weights)
-    graph.load_weights('weights/weights_ffn_mult/weights' + str(batch_size)+ '_' + str(lr) + '_'  + str(epoch) )
+    graph.load_weights('weights/weights_ffn_concat/weights' + str(batch_size)+ '_' + str(lr) + '_'  + str(epoch) )
 
-    predictions = read_predictions('paper_data/iedb-tcell-2009-negative.csv','paper_data/iedb-tcell-2009-positive.csv')
+    predictions = read_tcell_predictions('paper_data/iedb-tcell-2009-negative.csv','paper_data/iedb-tcell-2009-positive.csv')
 
 
     allele_list = sorted(predictions.keys())
