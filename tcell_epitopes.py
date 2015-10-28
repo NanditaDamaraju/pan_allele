@@ -55,24 +55,24 @@ def scores(Y_true_binary, Y_pred_log):
 #remove_residues = False
 pred = sys.argv[1]
 
-cutoff = 0
-
-if (pred[:3] == 'ffn'):
-    remove_residues = True
-    cutoff = hyperparameters['cutoff'][0]
-
-create_fasta_file(path, remove_residues = remove_residues, consensus_cutoff =cutoff)
-mhc_sequence_fasta_file = 'pan_allele/files/pseudo/pseudo_sequences.fasta'
-allele_sequence_data, max_allele_length = load_allele_sequence_data(mhc_sequence_fasta_file)
 
 if (pred == 'ffn_concat'):
     hyperparameters = {'cutoff':[ 0.33711265], 'dropouts': [ 0. ,  0.0254818 ,  0.10669398], 'sizes': [ 53,  82, 103,  74, 106, 59]}
+    create_fasta_file(path, remove_residues = True, consensus_cutoff =hyperparameters['cutoff'][0])
+    mhc_sequence_fasta_file = 'pan_allele/files/pseudo/pseudo_sequences.fasta'
+    allele_sequence_data, max_allele_length = load_allele_sequence_data(mhc_sequence_fasta_file)
     graph = build_graph_native_sequence_model(hyperparameters=hyperparameters, maxlen_mhc = max_allele_length)
 elif(pred == 'ffn_mult'):
     hyperparameters  = {'cutoff':[ 0], 'dropouts': [ 0.17621593,  0. ,  0.   ], 'sizes': [ 16, 128,  99, 128, 102], 'mult_size': [32, 15]}
+    create_fasta_file(path, remove_residues = True, consensus_cutoff =hyperparameters['cutoff'][0])
+    mhc_sequence_fasta_file = 'pan_allele/files/pseudo/pseudo_sequences.fasta'
+    allele_sequence_data, max_allele_length = load_allele_sequence_data(mhc_sequence_fasta_file)
     graph = ffn_matrix( hyperparameters=hyperparameters, maxlen_mhc = max_allele_length)
 elif(pred =='conv'):
     hyperparameters = {'filter_length': [3, 4], 'nb_filter': [67, 92], 'mult_size': [32, 10], 'layer_size': [ 128, 92, 65]}
+    create_fasta_file(path, remove_residues = False, consensus_cutoff =cutoff)
+    mhc_sequence_fasta_file = 'pan_allele/files/pseudo/pseudo_sequences.fasta'
+    allele_sequence_data, max_allele_length = load_allele_sequence_data(mhc_sequence_fasta_file)
     graph = convolution_graph_matrix(hyperparameters = hyperparameters, maxlen_mhc = max_allele_length )
 initial_weights = graph.get_weights()
 
