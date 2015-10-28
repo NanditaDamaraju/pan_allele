@@ -158,7 +158,7 @@ def main():
 
     ##Load graph
 
-    for num in range(1,40):
+    for num in range(0,63):
 
         predictors = ['mhcflurry', 'netmhcpan', 'netmhc', 'smmpmbec_cpp']
 
@@ -186,9 +186,9 @@ def main():
         for val in predictors:
                 total_metrics[val] =  np.zeros(data_len)
 
-        lr = 0.001
-        batch_size = 16
-        graph.load_weights('weights/weights_' + pred + '/weights' + str(batch_size)+ '_' + str(lr) + '_'  + str(epoch) )
+        lr = sys.argv[2]
+        batch_size = sys.argv[3]
+        graph.load_weights('weights/weights_' + pred + '/weights' + str(batch_size)+ '_' + str(lr) + '_'  + str(num) )
 
         counter  = 0
 
