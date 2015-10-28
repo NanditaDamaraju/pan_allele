@@ -218,7 +218,6 @@ def main():
 
         for val in predictors:
             print "\n",val
-            print len(Y_true_all), len(total_metrics[val])
             scores_val = scores(Y_true_all, total_metrics[val])
             print scores_val
 
