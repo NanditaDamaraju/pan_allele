@@ -151,14 +151,14 @@ def main():
         graph = ffn_matrix( hyperparameters=hyperparameters, maxlen_mhc = max_allele_length)
     elif(pred =='conv'):
         hyperparameters = {'filter_length': [3, 4], 'nb_filter': [67, 92], 'mult_size': [32, 10], 'layer_size': [ 128, 92, 65]}
-        create_fasta_file(path, remove_residues = False, consensus_cutoff =cutoff)
+        create_fasta_file(path, remove_residues = False, consensus_cutoff =0)
         mhc_sequence_fasta_file = 'pan_allele/files/pseudo/pseudo_sequences.fasta'
         allele_sequence_data, max_allele_length = load_allele_sequence_data(mhc_sequence_fasta_file)
         graph = convolution_graph_matrix(hyperparameters = hyperparameters, maxlen_mhc = max_allele_length )
 
     ##Load graph
 
-    for num in range(25,26):
+    for num in range(1,63):
 
         predictors = ['mhcflurry', 'netmhcpan', 'netmhc', 'smmpmbec_cpp']
 
@@ -205,12 +205,12 @@ def main():
             Y_true_allele = np.array(df_pred.loc['meas'])
             Y_true_all[counter:counter+len(peptides)] =  Y_true_allele
 
-            print "\n=====", allele, sum(Y_true_allele <= 500), len(Y_true_allele), "===="
+            #print "\n=====", allele, sum(Y_true_allele <= 500), len(Y_true_allele), "===="
 
             for val in predictors:
                 Y_pred_allele = np.array(df_pred.loc[val])
-                calculated_metrics = scores(Y_true_allele, Y_pred_allele)
-                print calculated_metrics
+                #calculated_metrics = scores(Y_true_allele, Y_pred_allele)
+                #print calculated_metrics
                 total_metrics[val][counter:counter+len(peptides)] = (Y_pred_allele)
 
             counter +=len(peptides)
