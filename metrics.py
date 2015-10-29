@@ -205,11 +205,12 @@ def main():
             Y_true_allele = np.array(df_pred.loc['meas'])
             Y_true_all[counter:counter+len(peptides)] =  Y_true_allele
 
-            #print "\n=====", allele, sum(Y_true <= 500), len(Y_true), "===="
+            print "\n=====", allele, sum(Y_true <= 500), len(Y_true), "===="
 
             for val in predictors:
                 Y_pred_allele = np.array(df_pred.loc[val])
-                #calculated_metrics = scores(Y_true_allele, Y_pred_allele)
+                calculated_metrics = scores(Y_true_allele, Y_pred_allele)
+                print calculated_metrics
                 total_metrics[val][counter:counter+len(peptides)] = (Y_pred_allele)
 
             counter +=len(peptides)
