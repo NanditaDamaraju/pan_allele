@@ -28,9 +28,8 @@ class LossHistory(keras.callbacks.Callback):
         self.lr = lr
 
     def on_epoch_end(self, epoch, logs={}):
-        if(epoch%12 == 0):
-            model_save = self.model
-            model_save.save_weights('weights/weights' + str(self.batch_size)+ '_' + str(self.lr) + '_'  + str(epoch),overwrite=True)
+        model_save = self.model
+        model_save.save_weights('weights/weights' + str(self.batch_size)+ '_' + str(self.lr) + '_'  + str(epoch),overwrite=True)
 
 
 
