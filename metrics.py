@@ -186,9 +186,9 @@ def main():
         for val in predictors:
                 total_metrics[val] =  np.zeros(data_len)
 
-        lr = sys.argv[2]
-        batch_size = sys.argv[3]
-        graph.load_weights('weights/weights_' + pred + '/weights' + str(batch_size)+ '_' + str(lr) + '_'  + str(num) )
+        lr = 0.001
+        batch_size = 32
+        graph.load_weights('weights/weights' + str(batch_size)+ '_' + str(lr) + '_'  + str(num) )
 
         counter  = 0
 
