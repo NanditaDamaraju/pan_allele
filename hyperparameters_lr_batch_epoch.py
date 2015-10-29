@@ -106,7 +106,7 @@ def main():
 
     for lr in learning_rates:
         for batch_size in batch_sizes:
-            save_cnn(hyperparameters, batch_size, lr)
+            save_ffn(hyperparameters, batch_size, lr)
 
 
 if __name__ == "__main__":
