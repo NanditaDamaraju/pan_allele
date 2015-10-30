@@ -55,7 +55,7 @@ def scores(Y_true, Y_pred):
     else:
         AUC = roc_auc_score(Y_true_binary, Y_pred_log)
 
-    return length, AUC, ACC, F1, precision, recall
+    return length, AUC*length, ACC*length, F1*length, precision*length, recall*length
 
 def read_blind_predictions(filename):
     predictions = collections.defaultdict(dict)
