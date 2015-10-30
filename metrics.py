@@ -158,7 +158,7 @@ def main():
 
     ##Load graph
 
-    for num in range(1,63):
+    for num in range(15,63):
 
         predictors = ['mhcflurry', 'netmhcpan', 'netmhc', 'smmpmbec_cpp']
 
@@ -211,11 +211,11 @@ def main():
             for val in predictors:
                 Y_pred_allele = np.array(df_pred.loc[val])
                 calculated_metrics[val]  = map(sum, zip(scores(Y_true_allele, Y_pred_allele), calculated_metrics[val]))
-                print calculated_metrics[val]
+
                 total_metrics[val][counter:counter+len(peptides)] = (Y_pred_allele)
 
             counter +=len(peptides)
-
+        print calculated_metrics[val]
         print "\n",num
 
         for val in predictors:
