@@ -158,7 +158,7 @@ def main():
 
     ##Load graph
 
-    for num in range(15,16):
+    for num in range(20,22):
 
         predictors = ['mhcflurry', 'netmhcpan', 'netmhc', 'smmpmbec_cpp']
 
