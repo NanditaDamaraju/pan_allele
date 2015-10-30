@@ -215,7 +215,7 @@ def main():
                 total_metrics[val][counter:counter+len(peptides)] = (Y_pred_allele)
 
             counter +=len(peptides)
-        print calculated_metrics[val]
+        print calculated_metrics
         print "\n",num
 
         for val in predictors:
