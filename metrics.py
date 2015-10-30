@@ -191,6 +191,7 @@ def main():
         graph.load_weights('weights/weights' + str(batch_size)+ '_' + str(lr) + '_'  + str(num) )
 
         counter  = 0
+        calculated_metrics =collections.defaultdict(tuple)
         for val in predictors:
             calculated_metrics[val] = (0,0,0,0,0,0)
         for allele in allele_list:
