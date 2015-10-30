@@ -192,7 +192,7 @@ def main():
 
         counter  = 0
 
-
+        calculated_metrics = (0,0,0,0,0,0)
         for allele in allele_list:
             filename = 'combined-test-data/'+ allele + '.csv'
             predictions = read_blind_predictions(filename)
