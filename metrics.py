@@ -191,8 +191,8 @@ def main():
         graph.load_weights('weights/weights' + str(batch_size)+ '_' + str(lr) + '_'  + str(num) )
 
         counter  = 0
-
-        calculated_metrics = (0,0,0,0,0,0)
+        for val in predictors:
+            calculated_metrics[val] = (0,0,0,0,0,0)
         for allele in allele_list:
             filename = 'combined-test-data/'+ allele + '.csv'
             predictions = read_blind_predictions(filename)
@@ -209,8 +209,8 @@ def main():
 
             for val in predictors:
                 Y_pred_allele = np.array(df_pred.loc[val])
-                calculated_metrics  = map(sum, zip(scores(Y_true_allele, Y_pred_allele), calculated_metrics))
-                print calculated_metrics
+                calculated_metrics[va]  += map(sum, zip(scores(Y_true_allele, Y_pred_allele), calculated_metrics))
+                print calculated_metrics[val]
                 total_metrics[val][counter:counter+len(peptides)] = (Y_pred_allele)
 
             counter +=len(peptides)
