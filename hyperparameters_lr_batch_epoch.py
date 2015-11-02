@@ -29,7 +29,7 @@ class LossHistory(keras.callbacks.Callback):
 
     def on_epoch_end(self, epoch, logs={}):
         model_save = self.model
-        model_save.save_weights('weights/weights' + str(self.batch_size)+ '_' + str(self.lr) + '_'  + str(epoch),overwrite=True)
+        model_save.save_weights('weights/ffn_concat/weights' + str(self.batch_size)+ '_' + str(self.lr) + '_'  + str(epoch),overwrite=True)
 
 
 
@@ -51,9 +51,9 @@ def save_ffn(hyperparameters, batch_size=32, lr=0.001):
                                                         )
 
     optimizer = keras.optimizers.RMSprop(lr=lr, rho=0.9, epsilon=1e-6)
-    #graph = build_graph_native_sequence_model(hyperparameters=hyperparameters, maxlen_mhc = max_allele_length,optimizer = optimizer)
+    graph = build_graph_native_sequence_model(hyperparameters=hyperparameters, maxlen_mhc = max_allele_length,optimizer = optimizer)
 
-    graph = ffn_matrix(hyperparameters= hyperparameters, maxlen_mhc=max_allele_length, optimizer = optimizer)
+    #graph = ffn_matrix(hyperparameters= hyperparameters, maxlen_mhc=max_allele_length, optimizer = optimizer)
     history = LossHistory()
     history.metrics(batch_size, lr)
     graph.fit(
@@ -96,8 +96,8 @@ def save_cnn(hyperparameters, batch_size=32, lr=0.001):
 
 
 def main():
-    hyperparameters =  {'cutoff':[ 0], 'dropouts': [ 0.17621593,  0.        ,  0.   ], 'sizes': [ 16, 128,  99, 128, 102], 'mult_size': [32, 15]}
-    #hyperparameters = {'cutoff':[ 0.33711265], 'dropouts': [ 0. ,  0.0254818 ,  0.10669398], 'sizes': [ 53,  82, 103,  74, 106, 59]}
+    #hyperparameters =  {'cutoff':[ 0], 'dropouts': [ 0.17621593,  0.        ,  0.   ], 'sizes': [ 16, 128,  99, 128, 102], 'mult_size': [32, 15]}
+    hyperparameters = {'cutoff':[ 0.33711265], 'dropouts': [ 0. ,  0.0254818 ,  0.10669398], 'sizes': [ 53,  82, 103,  74, 106, 59]}
     #hyperparameters = {'filter_length': [3, 4], 'nb_filter': [67, 92], 'mult_size': [32, 10], 'layer_size': [ 128, 92, 65]}
 
     batch_sizes = [32]

@@ -1,3 +1,9 @@
+
+'''
+Takes the model type as input and provides the
+AUC, Accuracy, F1, precision and recall
+'''
+
 import sys
 import os
 path = os.getcwd()
@@ -35,14 +41,10 @@ def format_peptide(peptide):
 
 def scores(Y_true, Y_pred):
     Y_true_binary = Y_true <=ic50_cutoff
-    Y_pred_log = 1 - np.log(Y_pred)/np.log(max_ic50)
-    AUC = 0
-    ACC = 0
-    F1 = 0
-    precision =0
-    recall = 0
-    length = 0
     Y_pred_binary = Y_pred <= ic50_cutoff
+
+    Y_pred_log = 1 - np.log(Y_pred)/np.log(max_ic50)
+
     ACC = accuracy_score(Y_true_binary, Y_pred_binary)
     F1 = f1_score(Y_true_binary, Y_pred_binary)
     recall = recall_score(Y_true_binary, Y_pred_binary)
@@ -55,7 +57,7 @@ def scores(Y_true, Y_pred):
     else:
         AUC = roc_auc_score(Y_true_binary, Y_pred_log)
 
-    return length, AUC*length, ACC*length, F1*length, precision*length, recall*length
+    return length, AUC, ACC, F1, precision, recall
 
 def read_blind_predictions(filename):
     predictions = collections.defaultdict(dict)
@@ -124,13 +126,10 @@ def make_prediction(peptide, allele_sequence, model=None):
 
 def main():
 
-    ##hyperparameters feed forward network concat
     #hyperparameters = {'cutoff':[ 0.33711265], 'dropouts': [ 0. ,  0.0254818 ,  0.10669398], 'sizes': [ 53,  82, 103,  74, 106, 59]}
 
-    ##hyperparameters feed forward network matrix multiply
     hyperparameters  = {'cutoff':[ 0], 'dropouts': [ 0.17621593,  0. ,  0.   ], 'sizes': [ 16, 128,  99, 128, 102], 'mult_size': [32, 15]}
 
-    ##hyperparameters convolutional network matrix multiply
     #hyperparameters = {'filter_length': [3, 4], 'nb_filter': [67, 92], 'mult_size': [32, 10], 'layer_size': [ 128, 92, 65]}
 
     #prediction input either "conv", "ffn_concat", "ffn_mult"
@@ -164,12 +163,11 @@ def main():
 
 
 
-
         allele_list = ['A0101',	    'A0201',	'A0202',    'A0203',	'A0206',	'A0301',
                        'A1101',	    'A2301',	'A2402',	'A2501',	'A2601',    'A2602',
                        'A2603',	    'A2902',	'A3001',	'A3002',	'A3101',	'A3201',
                        'A3301',	    'A6801',	'A6802',	'A6901',    'A8001',	'B0702',
-                       'B0801',	    'B0802',	'B0803',	'B1501',	'B1503',
+                       'B0801',	    'B0802',	'B0803',	'B1501',	'B1503',    'B1509',
                        'B1517',	    'B1801',	'B2703',    'B2705',    'B3501',	'B3801',
                        'B3901',	    'B4001',	'B4002',	'B4402',	'B4403',	'B4501',
                        'B4601',	    'B5101',    'B5301',	'B5401',	'B5701',	'B5801'	]
