@@ -136,7 +136,9 @@ def main():
     pred = sys.argv[1]
 
     if (pred == 'ffn_concat'):
-        hyperparameters = {'cutoff':[ 0.33711265], 'dropouts': [ 0. ,  0.0254818 ,  0.10669398], 'sizes': [ 53,  82, 103,  74, 106, 59]}
+        #hyperparameters = {'cutoff':[ 0.33711265], 'dropouts': [ 0. ,  0.0254818 ,  0.10669398], 'sizes': [ 53,  82, 103,  74, 106, 59]}
+        hyperparameters = {'cutoff':[ 0.33711265], 'dropouts': [ 0. ,  0.0254818 ,  0.10669398], 'sizes': [ 32,  32, 64,  32, 64, 32]}
+
         create_fasta_file(path, remove_residues = True, consensus_cutoff =hyperparameters['cutoff'][0])
         mhc_sequence_fasta_file = 'pan_allele/files/pseudo/pseudo_sequences.fasta'
         allele_sequence_data, max_allele_length = load_allele_sequence_data(mhc_sequence_fasta_file)
