@@ -50,7 +50,7 @@ def scores(Y_true, Y_pred):
     recall = recall_score(Y_true_binary, Y_pred_binary)
     precision = precision_score(Y_true_binary, Y_pred_binary)
     length = len(Y_true)
-
+    AUC = 0
 
     if(Y_true_binary.all() or not Y_true_binary.any()):
         print "Skipping as all labels are the same"
