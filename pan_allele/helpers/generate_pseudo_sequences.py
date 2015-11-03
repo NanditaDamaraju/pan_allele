@@ -3,7 +3,7 @@ import numpy as np
 from Bio import SeqIO
 from collections import Counter
 
-def create_fasta_file(path, remove_residues = False, consensus_cutoff = 0):
+def create_fasta_file(remove_residues = False, consensus_cutoff = 0):
     sequence_array =[]
     allele_list = []
     if(remove_residues):

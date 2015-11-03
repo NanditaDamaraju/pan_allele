@@ -10,7 +10,7 @@ from pan_allele.helpers.sequence_encoding import padded_indices
 from pan_allele.helpers.amino_acid import amino_acid_letter_indices, amino_acid_letters
 from keras.models import Graph
 from sklearn.metrics import roc_auc_score, f1_score, accuracy_score, precision_score, recall_score
-from metrics import format_peptide, make_prediction, read_tcell_predictions
+from metrics import format_peptide, make_prediction
 import numpy as np
 import collections
 import pandas as pd
@@ -19,6 +19,25 @@ max_ic50 = 20000
 ic50_cutoff = 500
 log_transformed_ic50_cutoff = 1 - np.log(ic50_cutoff)/np.log(max_ic50)
 
+
+#file0 negative prediction and file 1 positive predicitons
+def read_tcell_predictions(file0, file1):
+    predictions = collections.defaultdict(dict)
+    with open(file0, 'rb') as csvfile:
+        records = csv.reader(csvfile)
+        header = records.next()
+        for row in records:
+            peptide = row[2]
+            allele = row[1]
+            predictions[allele][peptide] = 0
+    with open(file1, 'rb') as csvfile:
+        records = csv.reader(csvfile)
+        header = records.next()
+        for row in records:
+            peptide = row[2]
+            allele = row[1]
+            predictions[allele][peptide] = 1
+    return predictions
 
 
 def scores(Y_true_binary, Y_pred_log):
