@@ -43,6 +43,13 @@ parser.add_argument(
     type=int,
     help="model at which epoch to choose")
 
+parser.add_argument(
+    "--allele_info",
+    default=False,
+    type=bool,
+    help="display allele information or not"
+
+)
 
 def scores(Y_true, Y_pred):
     Y_true_binary = Y_true <=ic50_cutoff
@@ -98,9 +105,8 @@ def main():
 
 
     #Load graph
-    lr = 0.001
     batch_size = 32
-    graph.load_weights('weights/' + pred + '/weights' + str(batch_size)+ '_' + str(lr) + '_'  + str(args.epoch) )
+    graph.load_weights('weights/' + args.pred + '/weights' + str(batch_size) + '_'  + str(args.epoch) )
 
     #Initializing
     data_len = sum(len(read_blind_predictions('combined-test-data/'+ allele + '.csv').keys()) for allele in allele_list)
@@ -118,9 +124,12 @@ def main():
 
     #calculating metrics per allele
     for allele in allele_list:
+
         filename = 'combined-test-data/'+ allele + '.csv'
         predictions = read_blind_predictions(filename)
+
         peptides = predictions.keys()
+
         for peptide in peptides:
             predictions[peptide]['mhcflurry'] = 20000**(1-make_prediction(peptide, allele_sequence_data[allele], graph))
         df_pred = pd.DataFrame(predictions)
@@ -129,11 +138,14 @@ def main():
         Y_true_allele = np.array(df_pred.loc['meas'])
         Y_true_all[pos:pos+len(peptides)] =  Y_true_allele
 
-        #print "\n=====", allele, sum(Y_true_allele <= 500), len(Y_true_allele), "===="
+        if (args.allele_info == True):
+            print "\n=====", allele, sum(Y_true_allele <= 500), len(Y_true_allele), "===="
+
         for val in predictors:
             Y_pred_allele = np.array(df_pred.loc[val])
             calculated_metrics[val]  = map(sum, zip(scores(Y_true_allele, Y_pred_allele), calculated_metrics[val]))
-            print val, scores(Y_true_allele, Y_pred_allele)
+            if (args.allele_info == True):
+                print val, scores(Y_true_allele, Y_pred_allele)
             total_metrics[val][pos:pos+len(peptides)] = (Y_pred_allele)
 
         pos +=len(peptides)
