@@ -28,7 +28,6 @@ import argparse
 
 max_ic50 = 20000
 ic50_cutoff = 500
-log_transformed_ic50_cutoff = 1 - np.log(ic50_cutoff)/np.log(max_ic50)
 
 
 parser = argparse.ArgumentParser()
@@ -150,13 +149,16 @@ def main():
             total_metrics[val][pos:pos+len(peptides)] = (Y_pred_allele)
 
         pos +=len(peptides)
-    print calculated_metrics
+
     print "\n",num
 
     for val in predictors:
+        calculated_metrics[val] = np.array(calculated_metrics[val])/len(allele_list)
         print "\n",val
         scores_val = scores(Y_true_all, total_metrics[val])
         print scores_val
+        print calculated_metrics[val]
+
 
 if __name__ == "__main__":
     main()
