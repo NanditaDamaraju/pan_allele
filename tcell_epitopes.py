@@ -62,17 +62,12 @@ def scores(Y_true_binary, Y_pred_log):
     Y_pred_binary = max_ic50**(1 - Y_pred_log) <=500
 
     AUC = 0
-    ACC = 0
-    F1 = 0
-    precision =0
-    recall = 0
-    length = 0
 
     ACC = accuracy_score(Y_true_binary, Y_pred_binary)
     F1 = f1_score(Y_true_binary, Y_pred_binary)
     recall = recall_score(Y_true_binary, Y_pred_binary)
     precision = precision_score(Y_true_binary, Y_pred_binary)
-    length = len(Y_true)
+    length = len(Y_true_binary)
 
     if(Y_true_binary.all() or not Y_true_binary.any()):
         print "Skipping as all labels are the same"
