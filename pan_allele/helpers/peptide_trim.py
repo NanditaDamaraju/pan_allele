@@ -1,3 +1,4 @@
+import numpy as np
 from sequence_encoding import padded_indices
 from amino_acid import amino_acid_letter_indices, amino_acid_letters
 
