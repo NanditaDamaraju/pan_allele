@@ -21,6 +21,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument(
     "--batch_size",
     default=32,
+    type=int,
     help="minibatch size for training model (int)")
 
 parser.add_argument(
@@ -31,6 +32,7 @@ parser.add_argument(
 parser.add_argument(
     "--epochs",
     default=200,
+    type=int,
     help="number of epochs to train upto")
 
 
@@ -71,9 +73,7 @@ def save_model(graph, batch_size,nb_epoch):
 
 def main():
     args = parser.parse_args()
-    print args.pred
     graph = get_graph_from_hyperparameters(args.pred)
-    print graph
     batch_sizes = [32]
     learning_rates = [0.001]
 

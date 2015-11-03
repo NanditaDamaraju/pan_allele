@@ -40,6 +40,7 @@ parser.add_argument(
 parser.add_argument(
     "--epoch",
     default=25,
+    type=int,
     help="model at which epoch to choose")
 
 
@@ -107,6 +108,7 @@ def main():
     total_metrics = collections.defaultdict(list)
     for val in predictors:
             total_metrics[val] =  np.zeros(data_len)
+
     pos  = 0
     calculated_metrics =collections.defaultdict(tuple)
     for val in predictors:
