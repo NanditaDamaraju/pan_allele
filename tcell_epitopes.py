@@ -2,22 +2,36 @@ import sys
 import os
 path = os.getcwd()
 sys.path.append(path)
-from pan_allele.helpers.feedforward_models import ffn_matrix, build_graph_native_sequence_model
-from pan_allele.helpers.convolution_model import convolution_graph_matrix
+
+from pan_allele.helpers.peptide_trim import make_prediction
 from pan_allele.helpers.generate_pseudo_sequences import create_fasta_file
 from pan_allele.helpers.pan_allele_data_helpers import load_allele_sequence_data
-from pan_allele.helpers.sequence_encoding import padded_indices
-from pan_allele.helpers.amino_acid import amino_acid_letter_indices, amino_acid_letters
+from pan_allele.helpers.hyperparameters import get_graph_from_hyperparameters
+
 from keras.models import Graph
 from sklearn.metrics import roc_auc_score, f1_score, accuracy_score, precision_score, recall_score
-from metrics import format_peptide, make_prediction
+
 import numpy as np
 import collections
 import pandas as pd
 import csv
+import argparse
+
 max_ic50 = 20000
 ic50_cutoff = 500
-log_transformed_ic50_cutoff = 1 - np.log(ic50_cutoff)/np.log(max_ic50)
+
+parser = argparse.ArgumentParser()
+
+parser.add_argument(
+    "--pred",
+    default='ffn_mult',
+    help="neural network type, `ffn_concat`, `ffn_mult` or `conv_mult`")
+
+parser.add_argument(
+    "--epoch",
+    default=25,
+    type=int,
+    help="model at which epoch to choose")
 
 
 #file0 negative prediction and file 1 positive predicitons
@@ -68,40 +82,16 @@ def scores(Y_true_binary, Y_pred_log):
     return length, AUC, ACC, F1, precision, recall
 
 
+def main():
+    args = parser.parse_args()
 
-##hyperparameters feed forward network concat
-###hyperparameters convolutional network matrix multiply
-#remove_residues = False
-pred = sys.argv[1]
-
-
-if (pred == 'ffn_concat'):
-    hyperparameters = {'cutoff':[ 0.33711265], 'dropouts': [ 0. ,  0.0254818 ,  0.10669398], 'sizes': [ 53,  82, 103,  74, 106, 59]}
-    create_fasta_file(path, remove_residues = True, consensus_cutoff =hyperparameters['cutoff'][0])
-    mhc_sequence_fasta_file = 'pan_allele/files/pseudo/pseudo_sequences.fasta'
-    allele_sequence_data, max_allele_length = load_allele_sequence_data(mhc_sequence_fasta_file)
-    graph = build_graph_native_sequence_model(hyperparameters=hyperparameters, maxlen_mhc = max_allele_length)
-
-elif(pred == 'ffn_mult'):
-    hyperparameters  = {'cutoff':[ 0], 'dropouts': [ 0.17621593,  0. ,  0.   ], 'sizes': [ 16, 128,  99, 128, 102], 'mult_size': [32, 15]}
-    create_fasta_file(path, remove_residues = True, consensus_cutoff =hyperparameters['cutoff'][0])
-    mhc_sequence_fasta_file = 'pan_allele/files/pseudo/pseudo_sequences.fasta'
-    allele_sequence_data, max_allele_length = load_allele_sequence_data(mhc_sequence_fasta_file)
-    graph = ffn_matrix( hyperparameters=hyperparameters, maxlen_mhc = max_allele_length)
-elif(pred =='conv'):
-    hyperparameters = {'filter_length': [3, 4], 'nb_filter': [67, 92], 'mult_size': [32, 10], 'layer_size': [ 128, 92, 65]}
-    create_fasta_file(path, remove_residues = False, consensus_cutoff =cutoff)
-    mhc_sequence_fasta_file = 'pan_allele/files/pseudo/pseudo_sequences.fasta'
-    allele_sequence_data, max_allele_length = load_allele_sequence_data(mhc_sequence_fasta_file)
-    graph = convolution_graph_matrix(hyperparameters = hyperparameters, maxlen_mhc = max_allele_length )
-initial_weights = graph.get_weights()
-
-##Load graph
-for epoch in range(0,64):
+    graph = get_graph_from_hyperparameters(args.pred)
     batch_size = 32
-    lr = 0.001
+
+    ##Load graph
+    epoch = args.epoch
     #graph.set_weights(initial_weights)
-    graph.load_weights('weights/weights_' + pred + '/weights' + str(batch_size)+ '_' + str(lr) + '_'  + str(epoch) )
+    graph.load_weights('weights/' + pred + '/weights' + str(batch_size)+ '_'  + str(epoch) )
 
     predictions = read_tcell_predictions('paper_data/iedb-tcell-2009-negative.csv','paper_data/iedb-tcell-2009-positive.csv')
 

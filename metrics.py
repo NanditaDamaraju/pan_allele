@@ -23,9 +23,6 @@ import pandas as pd
 import csv
 import argparse
 
-
-
-
 max_ic50 = 20000
 ic50_cutoff = 500
 
