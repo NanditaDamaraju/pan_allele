@@ -91,7 +91,7 @@ def main():
     ##Load graph
     epoch = args.epoch
     #graph.set_weights(initial_weights)
-    graph.load_weights('weights/' + pred + '/weights' + str(batch_size)+ '_'  + str(epoch) )
+    graph.load_weights('weights/' + args.pred + '/weights' + str(batch_size)+ '_'  + str(args.epoch) )
 
     predictions = read_tcell_predictions('paper_data/iedb-tcell-2009-negative.csv','paper_data/iedb-tcell-2009-positive.csv')
 
