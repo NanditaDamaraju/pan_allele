@@ -68,7 +68,7 @@ def scores(Y_true, Y_pred):
         print "Skipping as all labels are the same"
     else:
         AUC = roc_auc_score(Y_true_binary, Y_pred_log)
-    return np.array(length, AUC, ACC, F1, precision, recall)
+    return np.array((length, AUC, ACC, F1, precision, recall))
 
 def read_blind_predictions(filename):
     predictions = collections.defaultdict(dict)
