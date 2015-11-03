@@ -150,7 +150,7 @@ def main():
 
         pos +=len(peptides)
 
-    print "\n",num
+    print "\n",args.epoch
 
     for val in predictors:
         calculated_metrics[val] = np.array(calculated_metrics[val])/len(allele_list)
