@@ -13,7 +13,7 @@ def get_graph_from_hyperparameters(pred):
 
         create_fasta_file(remove_residues = True, consensus_cutoff =hyperparameters_ffn_concat['cutoff'][0])
         allele_sequence_data, max_allele_length = load_allele_sequence_data(mhc_sequence_fasta_file)
-        graph = build_graph_native_sequence_model( hyperparameters=hyperparameters, maxlen_mhc = max_allele_length)
+        graph = build_graph_native_sequence_model( hyperparameters=hyperparameters_ffn_concat, maxlen_mhc = max_allele_length)
 
         return graph
 
@@ -21,7 +21,7 @@ def get_graph_from_hyperparameters(pred):
 
         create_fasta_file(remove_residues = True, consensus_cutoff =hyperparameters_ffn_mult['cutoff'][0])
         allele_sequence_data, max_allele_length = load_allele_sequence_data(mhc_sequence_fasta_file)
-        graph = ffn_matrix( hyperparameters=hyperparameters, maxlen_mhc = max_allele_length)
+        graph = ffn_matrix( hyperparameters=hyperparameters_ffn_mult, maxlen_mhc = max_allele_length)
 
         return graph
 
@@ -29,6 +29,6 @@ def get_graph_from_hyperparameters(pred):
 
         create_fasta_file(remove_residues = False, consensus_cutoff =0)
         allele_sequence_data, max_allele_length = load_allele_sequence_data(mhc_sequence_fasta_file)
-        graph = convolution_graph_matrix( hyperparameters=hyperparameters, maxlen_mhc = max_allele_length)
+        graph = convolution_graph_matrix( hyperparameters=hyperparameters_conv_mult, maxlen_mhc = max_allele_length)
 
         return graph
