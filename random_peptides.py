@@ -20,7 +20,7 @@ allele_list = ['A0101',	    'A0201',	'A0202',    'A0203',	'A0206',	'A0301',
                'B4601',	    'B5101',    'B5301',	'B5401',	'B5701',	'B5801'	]
 graph = get_graph_from_hyperparameters('ffn_mult')
 for epoch in range(1,99):
-    graph.load_weights('weights/ffn_mult/weights32' + str(epoch))
+    graph.load_weights('weights/ffn_mult/weights32_' + str(epoch))
     predictions = np.empty(len(allele_list)*nb_peptides)
     counter = 0
     for allele in allele_list:
