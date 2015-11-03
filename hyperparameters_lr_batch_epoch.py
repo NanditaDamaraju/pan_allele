@@ -38,14 +38,15 @@ parser.add_argument(
 
 class LossHistory(keras.callbacks.Callback):
 
-    def metrics(self, batch_size):
+    def metrics(self, batch_size, pred):
         self.batch_size = batch_size
+        self.pred = pred
 
     def on_epoch_end(self, epoch, logs={}):
         model_save = self.model
-        model_save.save_weights('weights/ffn_concat/weights' + str(self.batch_size)+ '_' + str(epoch),overwrite=True)
+        model_save.save_weights('weights/' + self.pred +  '/weights' + str(self.batch_size)+ '_' + str(epoch),overwrite=True)
 
-def save_model(graph, batch_size,nb_epoch):
+def save_model(graph, pred,  batch_size,nb_epoch):
 
     allele_groups, df = load_binding_data('pan_allele/files/bdata.2009.mhci.public.1.txt')
     allele_sequence_data, max_allele_length = load_allele_sequence_data('pan_allele/files/pseudo/pseudo_sequences.fasta')
@@ -62,7 +63,7 @@ def save_model(graph, batch_size,nb_epoch):
 
 
     history = LossHistory()
-    history.metrics(batch_size)
+    history.metrics(batch_size, pred)
     graph.fit(
                         {'peptide':peptide_train, 'mhc':mhc_train, 'output': Y_train},
                         batch_size=batch_size,
@@ -79,7 +80,7 @@ def main():
 
     for lr in learning_rates:
         for batch_size in batch_sizes:
-            save_model(graph, args.batch_size, args.epochs)
+            save_model(graph, args.pred, args.batch_size, args.epochs)
 
 
 if __name__ == "__main__":
