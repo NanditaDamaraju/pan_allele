@@ -129,7 +129,7 @@ def main():
         predictions = read_blind_predictions(filename)
 
         peptides = predictions.keys()
-
+        allele_sequence_data, max_allele_length = load_allele_sequence_data('pan_allele/files/pseudo/pseudo_sequences.fasta')
         for peptide in peptides:
             predictions[peptide]['mhcflurry'] = 20000**(1-make_prediction(peptide, allele_sequence_data[allele], graph))
         df_pred = pd.DataFrame(predictions)
