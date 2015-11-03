@@ -110,3 +110,6 @@ def main():
                 Y_pred.append(make_prediction(peptide, allele_sequence_data[allele], graph))
         #print "=====", allele, sum(Y_true), len(Y_true), "===="
     print epoch, scores(Y_true, Y_pred)
+
+if __name__ == "__main__":
+    main()
