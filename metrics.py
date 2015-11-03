@@ -11,10 +11,7 @@ sys.path.append(path)
 
 from argparse import ArgumentParser
 
-from pan_allele.helpers.feedforward_models import ffn_matrix, build_graph_native_sequence_model
-from pan_allele.helpers.convolution_model import convolution_graph_matrix
-from pan_allele.helpers.pan_allele_data_helpers import load_allele_sequence_data
-from pan_allele.helpers.hyperparameters import get_hyperparameters
+from pan_allele.helpers.hyperparameters import get_graph_from_hyperparameters
 from pan_allele.helpers.peptide_trim import make_prediction
 
 from keras.models import Graph
@@ -68,24 +65,12 @@ def read_blind_predictions(filename):
 def main():
 
     #prediction input either "conv", "ffn_concat", "ffn_mult"
-
     pred = sys.argv[1]
-
-    hyperparameters = get_hyperparameters(pred)
-
-    mhc_sequence_fasta_file = 'pan_allele/files/pseudo/pseudo_sequences.fasta'
-    allele_sequence_data, max_allele_length = load_allele_sequence_data(mhc_sequence_fasta_file)
-    graph = ffn_matrix( hyperparameters=hyperparameters, maxlen_mhc = max_allele_length)
-
-
+    graph = get_graph_from_hyperparameters(pred)
 
     ##Load graph
-
     for num in range(34,75):
-
         predictors = ['mhcflurry', 'netmhcpan', 'netmhc', 'smmpmbec_cpp']
-
-
         #allele_list
 
         allele_list = ['A0101',	    'A0201',	'A0202',    'A0203',	'A0206',	'A0301',
