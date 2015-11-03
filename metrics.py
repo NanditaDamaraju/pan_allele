@@ -68,7 +68,7 @@ def scores(Y_true, Y_pred):
         print "Skipping as all labels are the same"
     else:
         AUC = roc_auc_score(Y_true_binary, Y_pred_log)
-    return length, AUC, ACC, F1, precision, recall
+    return np.array(length, AUC, ACC, F1, precision, recall)
 
 def read_blind_predictions(filename):
     predictions = collections.defaultdict(dict)
@@ -118,7 +118,7 @@ def main():
     pos  = 0
     calculated_metrics =collections.defaultdict(tuple)
     for val in predictors:
-        calculated_metrics[val] = (0,0,0,0,0,0)
+        calculated_metrics[val] = np.zeros(6)
 
 
 
@@ -143,7 +143,7 @@ def main():
 
         for val in predictors:
             Y_pred_allele = np.array(df_pred.loc[val])
-            calculated_metrics[val]  = map(sum, zip(scores(Y_true_allele, Y_pred_allele), calculated_metrics[val]))
+            calculated_metrics[val]  += length(peptides)*scores(Y_true_allele, Y_pred_allele), calculated_metrics[val]))
             if (args.allele_info == True):
                 print val, scores(Y_true_allele, Y_pred_allele)
             total_metrics[val][pos:pos+len(peptides)] = (Y_pred_allele)
@@ -153,7 +153,7 @@ def main():
     print "\n",args.epoch
 
     for val in predictors:
-        calculated_metrics[val] = np.array(calculated_metrics[val])/len(allele_list)
+        calculated_metrics[val] = calculated_metrics[val]/data_len
         print "\n",val
         scores_val = scores(Y_true_all, total_metrics[val])
         print scores_val
