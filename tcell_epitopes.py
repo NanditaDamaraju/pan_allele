@@ -29,8 +29,7 @@ parser.add_argument(
 
 parser.add_argument(
     "--epoch",
-    default=25,
-    type=int,
+    default="25,26",
     help="model at which epoch to choose")
 
 
@@ -84,28 +83,29 @@ def main():
     batch_size = 32
 
     ##Load graph
-    epoch = args.epoch
+    epoch_range = map(int, args.epoch.split(','))
     #graph.set_weights(initial_weights)
-    graph.load_weights('weights/' + args.pred + '/weights' + str(batch_size)+ '_'  + str(args.epoch) )
-    allele_sequence_data, max_allele_length = load_allele_sequence_data('pan_allele/files/pseudo/pseudo_sequences.fasta')
+    for epoch in range(epoch_range[0], epoch_range[1]) :
+        graph.load_weights('weights/' + args.pred + '/weights' + str(batch_size)+ '_'  + str(epoch) )
+        allele_sequence_data, max_allele_length = load_allele_sequence_data('pan_allele/files/pseudo/pseudo_sequences.fasta')
 
-    predictions = read_tcell_predictions('paper_data/iedb-tcell-2009-negative.csv','paper_data/iedb-tcell-2009-positive.csv')
+        predictions = read_tcell_predictions('paper_data/iedb-tcell-2009-negative.csv','paper_data/iedb-tcell-2009-positive.csv')
 
 
-    allele_list = sorted(predictions.keys())
-    allele_list[:] = [x for x in allele_list if not x.startswith('C')]
-    Y_true = []
-    Y_pred = []
-    for allele in allele_list:
+        allele_list = sorted(predictions.keys())
+        allele_list[:] = [x for x in allele_list if not x.startswith('C')]
+        Y_true = []
+        Y_pred = []
+        for allele in allele_list:
 
-        peptides = predictions[allele].keys()
-        for peptide in peptides:
-            if(len(peptide)>7 and len(peptide)<12):
-                #print allele, peptide, predictions[allele][peptide], 20000**(1-make_prediction(peptide, allele_sequence_data[allele], graph))
-                Y_true.append( predictions[allele][peptide])
-                Y_pred.append(make_prediction(peptide, allele_sequence_data[allele], graph))
-        #print "=====", allele, sum(Y_true), len(Y_true), "===="
-    print epoch, scores(Y_true, Y_pred)
+            peptides = predictions[allele].keys()
+            for peptide in peptides:
+                if(len(peptide)>7 and len(peptide)<12):
+                    #print allele, peptide, predictions[allele][peptide], 20000**(1-make_prediction(peptide, allele_sequence_data[allele], graph))
+                    Y_true.append( predictions[allele][peptide])
+                    Y_pred.append(make_prediction(peptide, allele_sequence_data[allele], graph))
+            #print "=====", allele, sum(Y_true), len(Y_true), "===="
+        print epoch, scores(Y_true, Y_pred)
 
 if __name__ == "__main__":
     main()
