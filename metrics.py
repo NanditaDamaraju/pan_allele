@@ -28,8 +28,6 @@ ic50_cutoff = 500
 log_transformed_ic50_cutoff = 1 - np.log(ic50_cutoff)/np.log(max_ic50)
 
 
-
-
 def scores(Y_true, Y_pred):
     Y_true_binary = Y_true <=ic50_cutoff
     Y_pred_binary = Y_pred <= ic50_cutoff
