@@ -64,7 +64,7 @@ def scores(Y_true, Y_pred):
     AUC = 0
 
     if(Y_true_binary.all() or not Y_true_binary.any()):
-        print "Skipping as all labels are the same"
+        pass
     else:
         AUC = roc_auc_score(Y_true_binary, Y_pred_log)
     return np.array((length, AUC, ACC, F1, precision, recall))
