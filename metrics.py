@@ -157,10 +157,10 @@ def main():
 
         for val in predictors:
             calculated_metrics[val] = calculated_metrics[val]/data_len
-            print "\n",val,','
+            print "\n",val,',',
             scores_val = scores(Y_true_all, total_metrics[val])
             #print scores_val[1:]
-            print ','.join(calculated_metrics[val][1:])
+            print ','.join(map(str,calculated_metrics[val][1:]))
 
 
 if __name__ == "__main__":
