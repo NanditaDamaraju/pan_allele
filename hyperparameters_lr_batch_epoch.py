@@ -8,7 +8,6 @@ sys.path.append(path)
 import pandas as pd
 import numpy as np
 
-from sklearn.metrics import roc_auc_score, accuracy_score
 from pan_allele.helpers.pan_allele_data_helpers import *
 from pan_allele.helpers.hyperparameters import get_graph_from_hyperparameters
 

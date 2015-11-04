@@ -153,13 +153,13 @@ def main():
             pos +=len(peptides)
 
         print "\n",epoch
-        print "AUC\tACC\tF1\tPre\tRecall"
+        print "\tAUC\tACC\tF1\tPre\tRecall"
 
         for val in predictors:
             calculated_metrics[val] = calculated_metrics[val]/data_len
-            print "\n",val
+            print "\n",val[-5:],
             scores_val = scores(Y_true_all, total_metrics[val])
-            print scores_val[1:]
+            #print scores_val[1:]
             print calculated_metrics[val][1:]
 
 
