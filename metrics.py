@@ -89,7 +89,7 @@ def main():
 
     graph = get_graph_from_hyperparameters(args.pred)
 
-    predictors = ['mhcflurry', 'netmhcpan', 'netmhc', 'smmpmbec_cpp']
+    predictors = ['mhcflurry']
     #allele_list
 
     allele_list = ['A0101',	    'A0201',	'A0202',    'A0203',	'A0206',	'A0301',
