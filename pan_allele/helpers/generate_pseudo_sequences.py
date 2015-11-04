@@ -45,6 +45,6 @@ def create_fasta_file(remove_residues = False, consensus_cutoff = 0):
     else:
 
         with open("pan_allele/files/trimmed-human-class1.fasta",'rU') as f:
-            with open("pan_allele/files/pseudo/pseudo_sequences.fasta", "wb") as f1:
+            with open("pan_allele/files/pseudo/pseudo_sequences.fasta", "w") as f1:
                 for line in f:
                     f1.write(line)
