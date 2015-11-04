@@ -39,8 +39,7 @@ parser.add_argument(
 
 parser.add_argument(
     "--epoch",
-    default=25,
-    type=int,
+    default="25,26",
     help="model at which epoch to choose")
 
 parser.add_argument(
@@ -103,61 +102,65 @@ def main():
                    'B4601',	    'B5101',    'B5301',	'B5401',	'B5701',	'B5801'	]
 
 
-
     #Load graph
     batch_size = 32
-    graph.load_weights('weights/' + args.pred + '/weights' + str(batch_size) + '_'  + str(args.epoch) )
+    epoch_range = map(int, args.epoch.split(','))
 
-    #Initializing
-    data_len = sum(len(read_blind_predictions('combined-test-data/'+ allele + '.csv').keys()) for allele in allele_list)
-    Y_true_all = np.zeros(data_len)
-    total_metrics = collections.defaultdict(list)
-    for val in predictors:
-            total_metrics[val] =  np.zeros(data_len)
+    for epoch in range(epoch_range[0],epoch_range[1])
 
-    pos  = 0
-    calculated_metrics =collections.defaultdict(tuple)
-    for val in predictors:
-        calculated_metrics[val] = np.zeros(6)
+        graph.load_weights('weights/' + args.pred + '/weights' + str(batch_size) + '_'  + str(epoch) )
 
+        #Initializing
+        data_len = sum(len(read_blind_predictions('combined-test-data/'+ allele + '.csv').keys()) for allele in allele_list)
+        Y_true_all = np.zeros(data_len)
+        total_metrics = collections.defaultdict(list)
+        for val in predictors:
+                total_metrics[val] =  np.zeros(data_len)
 
-
-    #calculating metrics per allele
-    for allele in allele_list:
-
-        filename = 'combined-test-data/'+ allele + '.csv'
-        predictions = read_blind_predictions(filename)
-
-        peptides = predictions.keys()
-        allele_sequence_data, max_allele_length = load_allele_sequence_data('pan_allele/files/pseudo/pseudo_sequences.fasta')
-        for peptide in peptides:
-            predictions[peptide]['mhcflurry'] = 20000**(1-make_prediction(peptide, allele_sequence_data[allele], graph))
-        df_pred = pd.DataFrame(predictions)
+        pos  = 0
+        calculated_metrics =collections.defaultdict(tuple)
+        for val in predictors:
+            calculated_metrics[val] = np.zeros(6)
 
 
-        Y_true_allele = np.array(df_pred.loc['meas'])
-        Y_true_all[pos:pos+len(peptides)] =  Y_true_allele
 
-        if (args.allele_info == True):
-            print "\n=====", allele, sum(Y_true_allele <= 500), len(Y_true_allele), "===="
+        #calculating metrics per allele
+        for allele in allele_list:
+
+            filename = 'combined-test-data/'+ allele + '.csv'
+            predictions = read_blind_predictions(filename)
+
+            peptides = predictions.keys()
+            allele_sequence_data, max_allele_length = load_allele_sequence_data('pan_allele/files/pseudo/pseudo_sequences.fasta')
+            for peptide in peptides:
+                predictions[peptide]['mhcflurry'] = 20000**(1-make_prediction(peptide, allele_sequence_data[allele], graph))
+            df_pred = pd.DataFrame(predictions)
+
+
+            Y_true_allele = np.array(df_pred.loc['meas'])
+            Y_true_all[pos:pos+len(peptides)] =  Y_true_allele
+
+            if (args.allele_info == True):
+                print "\n=====", allele, sum(Y_true_allele <= 500), len(Y_true_allele), "===="
+
+            for val in predictors:
+                Y_pred_allele = np.array(df_pred.loc[val])
+                calculated_metrics[val]  += len(peptides)*scores(Y_true_allele, Y_pred_allele)
+                if (args.allele_info == True):
+                    print val, scores(Y_true_allele, Y_pred_allele)
+                total_metrics[val][pos:pos+len(peptides)] = (Y_pred_allele)
+
+            pos +=len(peptides)
+
+        print "\n",epoch
+        print "AUC\tACC\tF1\tPre\tRecall"
 
         for val in predictors:
-            Y_pred_allele = np.array(df_pred.loc[val])
-            calculated_metrics[val]  += len(peptides)*scores(Y_true_allele, Y_pred_allele)
-            if (args.allele_info == True):
-                print val, scores(Y_true_allele, Y_pred_allele)
-            total_metrics[val][pos:pos+len(peptides)] = (Y_pred_allele)
-
-        pos +=len(peptides)
-
-    print "\n",args.epoch
-
-    for val in predictors:
-        calculated_metrics[val] = calculated_metrics[val]/data_len
-        print "\n",val
-        scores_val = scores(Y_true_all, total_metrics[val])
-        print scores_val
-        print calculated_metrics[val]
+            calculated_metrics[val] = calculated_metrics[val]/data_len
+            print "\n",val
+            scores_val = scores(Y_true_all, total_metrics[val])
+            print scores_val[1:]
+            print calculated_metrics[val][1:]
 
 
 if __name__ == "__main__":
