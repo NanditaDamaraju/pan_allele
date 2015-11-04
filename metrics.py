@@ -23,7 +23,7 @@ import pandas as pd
 import csv
 import argparse
 
-np.set_printoptions(precision=3)
+np.set_printoptions(precision=3,suppress=True)
 
 max_ic50 = 20000
 ic50_cutoff = 500
