@@ -106,7 +106,7 @@ def main():
     batch_size = 32
     epoch_range = map(int, args.epoch.split(','))
 
-    for epoch in range(epoch_range[0],epoch_range[1])
+    for epoch in range(epoch_range[0],epoch_range[1]):
 
         graph.load_weights('weights/' + args.pred + '/weights' + str(batch_size) + '_'  + str(epoch) )
 
