@@ -152,7 +152,7 @@ def main():
 
             pos +=len(peptides)
 
-        print "\n",epoch,
+        print epoch,
         #print ",AUC\tACC\tF1\tPre\tRecall"
 
         for val in predictors:
