@@ -7,6 +7,7 @@ sys.path.append(path)
 
 import pandas as pd
 import numpy as np
+from collections import defaultdict
 
 from pan_allele.helpers.pan_allele_data_helpers import *
 from pan_allele.helpers.hyperparameters import get_graph_from_hyperparameters
@@ -40,24 +41,36 @@ blind_allele_list = sorted(create_allele_list(blind_allele_groups, allele_sequen
 
 
 print blind_allele_list
-nb_iter = 10
-preds = np.zeros((len(blind_peptides),1))
+nb_iter = 2
+preds_allele = defaultdict(list)
+for allele in blind_allele_list:
+    preds_allele[allele] = np.zeros(len(blind_allele_groups[allele][2]))
 
 for i in range(0,nb_iter):
     peptides_train, peptides_test = split_train_test(peptides,5)
     mhc_train, mhc_test = split_train_test(mhc,5)
     Y_train, Y_test = split_train_test(Y,5)
+
     graph = get_graph_from_hyperparameters('ffn_mult')
-    graph.fit({'peptide':peptides_train, 'mhc':mhc_train, 'output': Y_train},
-                batch_size=32,
-                nb_epoch=19,
-                verbose = 1,
-                )
+    # graph.fit({'peptide':peptides_train, 'mhc':mhc_train, 'output': Y_train},
+    #             batch_size=32,
+    #             nb_epoch=1,
+    #             verbose = 1,
+    #             )
+    for allele in blind_allele_list:
+        blind_peptides, blind_mhc, blind_Y = get_model_data(  [allele],
+                                                            allele_sequence_data,
+                                                            blind_allele_groups,
+                                                            dense_mhc_model=None,
+                                                            peptide_length = 9,
+                                                            mhc_length=max_allele_length,
+                                                            mhc_dense = None, )
+        preds = graph.predict({'peptide':blind_peptides, 'mhc':blind_mhc})['output']
+        preds = preds.reshape(preds.shape[0])
+        print preds.shape
+        preds_allele[allele]+=20000**(1-preds)/nb_iter
 
-    preds += graph.predict({'peptide':blind_peptides, 'mhc':blind_mhc})['output']
-    print preds
-preds = preds.reshape(preds.shape[0])
-preds = (20000**(1-preds))/nb_iter
 
 
-print scores(blind_Y, preds )
+for allele in blind_allele_list:
+    print scores(blind_allele_groups[allele][2], preds_allele[allele] )
