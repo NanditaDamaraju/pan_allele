@@ -51,7 +51,7 @@ for i in range(0,nb_iter):
     mhc_train, mhc_test = split_train_test(mhc,5)
     Y_train, Y_test = split_train_test(Y,5)
 
-    graph = get_graph_from_hyperparameters('conv_mult')
+    graph = get_graph_from_hyperparameters('ffn_mult')
     graph.fit({'peptide':peptides_train, 'mhc':mhc_train, 'output': Y_train},
                 batch_size=32,
                 nb_epoch=19,
