@@ -37,30 +37,27 @@ peptides, mhc, Y = get_model_data(  allele_list,
 
 blind_allele_groups, blind_df = load_binding_data('blind_data.txt')
 blind_allele_list = sorted(create_allele_list(blind_allele_groups, allele_sequence_data))
-blind_peptides,blind_mhc,blind_Y = get_model_data(  blind_allele_list,
-                                                    allele_sequence_data,
-                                                    blind_allele_groups,
-                                                    dense_mhc_model=None,
-                                                    peptide_length = 9,
-                                                    mhc_length=max_allele_length,
-                                                    mhc_dense = None, )
+
 
 print blind_allele_list
-nb_iter = 2
+nb_iter = 10
 preds = np.zeros((len(blind_peptides),1))
-for i in range(0,nb_iter):
 
+for i in range(0,nb_iter):
     peptides_train, peptides_test = split_train_test(peptides,5)
     mhc_train, mhc_test = split_train_test(mhc,5)
     Y_train, Y_test = split_train_test(Y,5)
-    graph = get_graph_from_hyperparameters('conv_mult')
-    # graph.fit({'peptides':peptides_train, 'mhc':mhc_train, 'output', Y_train},
-    #             batch_size=batch_size,
-    #             nb_epoch=19,
-    #             verbose = 1,
-    #             callbacks=[history])
-    data_len = sum(len(read_blind_predictions('combined-test-data/'+ allele + '.csv').keys()) for allele in blind_allele_list)
+    graph = get_graph_from_hyperparameters('ffn_mult')
+    graph.fit({'peptide':peptides_train, 'mhc':mhc_train, 'output': Y_train},
+                batch_size=32,
+                nb_epoch=19,
+                verbose = 1,
+                )
 
-    calculated_metrics, total_metrics, Y_true_all = blind_predict(blind_allele_list, graph, predictors=['mhcflurry'], data_len=data_len)
+    preds += graph.predict({'peptide':blind_peptides, 'mhc':blind_mhc})['output']
+    print preds
+preds = preds.reshape(preds.shape[0])
+preds = (20000**(1-preds))/nb_iter
 
-    print calculated_metrics
+
+print scores(blind_Y, preds )
