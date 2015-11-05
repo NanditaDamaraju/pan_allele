@@ -55,7 +55,7 @@ for i in range(0,nb_iter):
     graph = get_graph_from_hyperparameters('conv_mult')
     graph.fit({'peptide':peptides_train, 'mhc':mhc_train, 'output': Y_train},
                 batch_size=32,
-                nb_epoch=1,
+                nb_epoch=19,
                 verbose = 1,
                 )
     for allele in blind_allele_list:
