@@ -24,6 +24,7 @@ def split_train_test(arr, k_fold):
 
 
 allele_groups, df = load_binding_data('pan_allele/files/bdata.2009.mhci.public.1.txt')
+graph = get_graph_from_hyperparameters('conv_mult')
 allele_sequence_data, max_allele_length = load_allele_sequence_data('pan_allele/files/pseudo/pseudo_sequences.fasta')
 allele_list = sorted(create_allele_list(allele_groups, allele_sequence_data))
 
@@ -51,10 +52,10 @@ for i in range(0,nb_iter):
     mhc_train, mhc_test = split_train_test(mhc,5)
     Y_train, Y_test = split_train_test(Y,5)
 
-    graph = get_graph_from_hyperparameters('ffn_mult')
+    graph = get_graph_from_hyperparameters('conv_mult')
     graph.fit({'peptide':peptides_train, 'mhc':mhc_train, 'output': Y_train},
                 batch_size=32,
-                nb_epoch=19,
+                nb_epoch=1,
                 verbose = 1,
                 )
     for allele in blind_allele_list:
