@@ -32,7 +32,7 @@ blind_allele_list = sorted(create_allele_list(blind_allele_groups, allele_sequen
 
 
 print blind_allele_list
-nb_iter = 3
+nb_iter = 1
 preds_allele = defaultdict(list)
 for allele in blind_allele_list:
     preds_allele[allele] = np.zeros(len(blind_allele_groups[allele][2]))
@@ -47,13 +47,13 @@ for i in range(0,nb_iter):
                                         mhc_length=max_allele_length,
                                         mhc_dense = None
                                      )
-                                     
+
     peptides_train, peptides_test = split_train_test(peptides,5)
     mhc_train, mhc_test = split_train_test(mhc,5)
     Y_train, Y_test = split_train_test(Y,5)
 
     graph = get_graph_from_hyperparameters('ffn_mult')
-    graph.fit({'peptide':peptides_train, 'mhc':mhc_train, 'output': Y_train},
+    graph.fit({'peptide':peptides, 'mhc':mhc, 'output': Y},
                 batch_size=32,
                 nb_epoch=10,
                 verbose = 1,
@@ -67,6 +67,7 @@ for i in range(0,nb_iter):
                                                             mhc_length=max_allele_length,
                                                             mhc_dense = None, )
         preds = graph.predict({'peptide':blind_peptides, 'mhc':blind_mhc})['output']
+
         preds = preds.reshape(preds.shape[0])
         preds_allele[allele]+=(20000**(1-preds))/nb_iter
 
