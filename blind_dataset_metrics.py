@@ -1,5 +1,3 @@
-@@ -0,0 +1,167 @@
-
 '''
 Takes the model type as input and provides the
 AUC, Accuracy, F1, precision and recall
