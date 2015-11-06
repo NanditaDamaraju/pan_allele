@@ -25,14 +25,7 @@ graph = get_graph_from_hyperparameters('ffn_mult')
 allele_sequence_data, max_allele_length = load_allele_sequence_data('pan_allele/files/pseudo/pseudo_sequences.fasta')
 allele_list = sorted(create_allele_list(allele_groups, allele_sequence_data))
 
-peptides, mhc, Y = get_model_data(  allele_list,
-                                    allele_sequence_data,
-                                    allele_groups,
-                                    dense_mhc_model=None,
-                                    peptide_length = 9,
-                                    mhc_length=max_allele_length,
-                                    mhc_dense = None
-                                 )
+
 
 blind_allele_groups, blind_df = load_binding_data('blind_data.txt')
 blind_allele_list = sorted(create_allele_list(blind_allele_groups, allele_sequence_data))
@@ -46,13 +39,15 @@ for allele in blind_allele_list:
 
 for i in range(0,nb_iter):
 
-    indices = np.arange(len(peptides))
-    np.random.shuffle(indices)
-
-    peptides = peptides[indices]
-    mhc = mhc[indices]
-    Y = Y[indices]
-
+    peptides, mhc, Y = get_model_data(  allele_list,
+                                        allele_sequence_data,
+                                        allele_groups,
+                                        dense_mhc_model=None,
+                                        peptide_length = 9,
+                                        mhc_length=max_allele_length,
+                                        mhc_dense = None
+                                     )
+                                     
     peptides_train, peptides_test = split_train_test(peptides,5)
     mhc_train, mhc_test = split_train_test(mhc,5)
     Y_train, Y_test = split_train_test(Y,5)
