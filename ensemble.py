@@ -55,7 +55,7 @@ for i in range(0,nb_iter):
     graph = get_graph_from_hyperparameters('conv_mult')
     graph.fit({'peptide':peptides_train, 'mhc':mhc_train, 'output': Y_train},
                 batch_size=32,
-                nb_epoch=5,
+                nb_epoch=2,
                 verbose = 1,
                 )
     for allele in blind_allele_list:
@@ -68,7 +68,8 @@ for i in range(0,nb_iter):
                                                             mhc_dense = None, )
         preds = graph.predict({'peptide':blind_peptides, 'mhc':blind_mhc})['output']
         preds = preds.reshape(preds.shape[0])
-        preds_allele[allele]+=20000**(1-preds)/nb_iter
+        preds_allele[allele]+=(20000**(1-preds))/nb_iter
+        print preds_allele
 
 
 #sum_scores = np.zeros(6)
