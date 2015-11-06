@@ -11,7 +11,7 @@ from collections import defaultdict
 
 from pan_allele.helpers.pan_allele_data_helpers import *
 from pan_allele.helpers.hyperparameters import get_graph_from_hyperparameters
-from blind_dataset_metrics import scores, blind_predict,  read_blind_predictions
+from blind_dataset_metrics import scores, read_blind_predictions
 
 def split_train_test(arr, k_fold):
     train = [x for i, x in enumerate(arr) if i%k_fold != 1]
