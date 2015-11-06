@@ -12,6 +12,7 @@ from collections import defaultdict
 from pan_allele.helpers.pan_allele_data_helpers import *
 from pan_allele.helpers.hyperparameters import get_graph_from_hyperparameters
 from blind_dataset_metrics import scores, read_blind_predictions
+from pan_allele.helpers.peptide_trim import make_prediction
 
 def split_train_test(arr, k_fold):
     train = [x for i, x in enumerate(arr) if i%k_fold != 1]
@@ -62,20 +63,18 @@ for i in range(0,nb_iter):
                 verbose = 1,
                 )
     for allele in blind_allele_list:
-        blind_peptides, blind_mhc, blind_Y = get_model_data(  [allele],
-                                                            allele_sequence_data,
-                                                            blind_allele_groups,
-                                                            dense_mhc_model=None,
-                                                            peptide_length = 9,
-                                                            mhc_length=max_allele_length,
-                                                            mhc_dense = None, )
-        preds = graph.predict({'peptide':blind_peptides, 'mhc':blind_mhc})['output']
-
-        preds = preds.reshape(preds.shape[0])
-
+        predictions = read_blind_predictions('combined-test-data/'+ allele + '.csv')
+        peptides = predictions.keys()
+        preds = []
+        meas = []
+        for peptide in peptides:
+            preds.append(make_prediction(peptide, allele_sequence_data[allele],graph))
+            meas.append(predictions[peptide]['meas'])
+        preds = np.array(preds)
+        meas = np.array(meas)
         preds_allele[allele]+=(20000**(1-preds))/nb_iter
         print preds, preds_allele[allele]
-        actual_allele[allele] = 20000*(1-blind_Y)
+        actual_allele[allele] = 20000*(1-meas)
 
 
 #sum_scores = np.zeros(6)
