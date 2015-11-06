@@ -34,8 +34,11 @@ blind_allele_list = sorted(create_allele_list(blind_allele_groups, allele_sequen
 print blind_allele_list
 nb_iter = 1
 preds_allele = defaultdict(list)
+actual_allele = defaultdict(list)
+
 for allele in blind_allele_list:
     preds_allele[allele] = np.zeros(len(blind_allele_groups[allele][2]))
+    actual_allele[allele] = np.zeros(len(blind_allele_groups[allele][2]))
 
 for i in range(0,nb_iter):
 
@@ -70,9 +73,9 @@ for i in range(0,nb_iter):
 
         preds = preds.reshape(preds.shape[0])
         preds_allele[allele]+=(20000**(1-preds))/nb_iter
-
+        actual_allele[allele] = blind_Y
 
 
 #sum_scores = np.zeros(6)
 for allele in blind_allele_list:
-    print scores(blind_allele_groups[allele][2], preds_allele[allele] )
+    print scores(actual_allele[allele], preds_allele[allele] )
