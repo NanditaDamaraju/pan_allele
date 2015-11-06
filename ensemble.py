@@ -14,9 +14,6 @@ from pan_allele.helpers.hyperparameters import get_graph_from_hyperparameters
 from blind_dataset_metrics import scores, blind_predict,  read_blind_predictions
 
 def split_train_test(arr, k_fold):
-    indices = np.arange(len(arr))
-    np.random.shuffle(indices)
-    arr = arr[indices]
     train = [x for i, x in enumerate(arr) if i%k_fold != 1]
     test = [x for i, x in enumerate(arr) if i%k_fold == 1]
     return np.array(train), np.array(test)
@@ -42,12 +39,20 @@ blind_allele_list = sorted(create_allele_list(blind_allele_groups, allele_sequen
 
 
 print blind_allele_list
-nb_iter = 2
+nb_iter = 3
 preds_allele = defaultdict(list)
 for allele in blind_allele_list:
     preds_allele[allele] = np.zeros(len(blind_allele_groups[allele][2]))
 
 for i in range(0,nb_iter):
+
+    indices = np.arange(len(peptides))
+    np.random.shuffle(indices)
+
+    peptides = peptides[indices]
+    mhc = mhc[indices]
+    Y = Y[indices]
+
     peptides_train, peptides_test = split_train_test(peptides,5)
     mhc_train, mhc_test = split_train_test(mhc,5)
     Y_train, Y_test = split_train_test(Y,5)
@@ -67,7 +72,6 @@ for i in range(0,nb_iter):
                                                             mhc_length=max_allele_length,
                                                             mhc_dense = None, )
         preds = graph.predict({'peptide':blind_peptides, 'mhc':blind_mhc})['output']
-        print blind_peptides, blind_mhc, blind_Y
         preds = preds.reshape(preds.shape[0])
         preds_allele[allele]+=(20000**(1-preds))/nb_iter
 
