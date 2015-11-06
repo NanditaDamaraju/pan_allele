@@ -24,7 +24,7 @@ def split_train_test(arr, k_fold):
 
 
 allele_groups, df = load_binding_data('pan_allele/files/bdata.2009.mhci.public.1.txt')
-graph = get_graph_from_hyperparameters('conv_mult')
+graph = get_graph_from_hyperparameters('ffn_mult')
 allele_sequence_data, max_allele_length = load_allele_sequence_data('pan_allele/files/pseudo/pseudo_sequences.fasta')
 allele_list = sorted(create_allele_list(allele_groups, allele_sequence_data))
 
