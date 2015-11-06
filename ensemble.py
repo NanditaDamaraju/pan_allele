@@ -78,5 +78,11 @@ for i in range(0,nb_iter):
 
 
 #sum_scores = np.zeros(6)
+calculated_metrics = []
 for allele in blind_allele_list:
-    print scores(actual_allele[allele], preds_allele[allele] )
+    Y_pred_allele = actual_allele[allele]
+    score_allele = scores(Y_true_allele, Y_pred_allele)
+    calculated_metrics  += score_allele[0] * score_allele
+
+data_len = sum(len(read_blind_predictions('combined-test-data/'+ allele + '.csv').keys()) for allele in allele_list)
+print calculated_metrics/data_len
