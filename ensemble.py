@@ -73,7 +73,7 @@ for i in range(0,nb_iter):
 
         preds = preds.reshape(preds.shape[0])
         preds_allele[allele]+=(20000**(1-preds))/nb_iter
-        actual_allele[allele] = blind_Y
+        actual_allele[allele] = 20000*(1-blind_Y)
 
 
 #sum_scores = np.zeros(6)
