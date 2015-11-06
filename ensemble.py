@@ -58,7 +58,7 @@ for i in range(0,nb_iter):
                 nb_epoch=10,
                 verbose = 1,
                 )
-    for allele in ['A0101']:
+    for allele in blind_allele_list:
         blind_peptides, blind_mhc, blind_Y = get_model_data(  [allele],
                                                             allele_sequence_data,
                                                             blind_allele_groups,
