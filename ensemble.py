@@ -73,7 +73,7 @@ for i in range(0,nb_iter):
         try:
             preds_allele[allele]+=preds/nb_iter
         except:
-            preds_allele[allele]=(20000**(1-preds))/nb_iter
+            preds_allele[allele]=preds/nb_iter
         actual_allele[allele] = meas
 
 
