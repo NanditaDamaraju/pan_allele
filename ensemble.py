@@ -42,7 +42,7 @@ blind_allele_list = sorted(create_allele_list(blind_allele_groups, allele_sequen
 
 
 print blind_allele_list
-nb_iter = 10
+nb_iter = 2
 preds_allele = defaultdict(list)
 for allele in blind_allele_list:
     preds_allele[allele] = np.zeros(len(blind_allele_groups[allele][2]))
@@ -55,7 +55,7 @@ for i in range(0,nb_iter):
     graph = get_graph_from_hyperparameters('conv_mult')
     graph.fit({'peptide':peptides_train, 'mhc':mhc_train, 'output': Y_train},
                 batch_size=32,
-                nb_epoch=19,
+                nb_epoch=5,
                 verbose = 1,
                 )
     for allele in blind_allele_list:
@@ -71,6 +71,6 @@ for i in range(0,nb_iter):
         preds_allele[allele]+=20000**(1-preds)/nb_iter
 
 
-
+#sum_scores = np.zeros(6)
 for allele in blind_allele_list:
     print scores(blind_allele_groups[allele][2], preds_allele[allele] )
