@@ -37,9 +37,7 @@ nb_iter = 1
 preds_allele = defaultdict(list)
 actual_allele = defaultdict(list)
 
-for allele in blind_allele_list:
-    preds_allele[allele] = np.zeros(len(blind_allele_groups[allele][2]))
-    actual_allele[allele] = np.zeros(len(blind_allele_groups[allele][2]))
+
 
 for i in range(0,nb_iter):
 
@@ -72,8 +70,10 @@ for i in range(0,nb_iter):
             meas.append(predictions[peptide]['meas'])
         preds = np.array(preds)
         meas = np.array(meas)
-        preds_allele[allele]+=(20000**(1-preds))/nb_iter
-        print preds, preds_allele[allele]
+        try:
+            preds_allele[allele]+=(20000**(1-preds))/nb_iter
+        except:
+            preds_allele[allele]=(20000**(1-preds))/nb_iter
         actual_allele[allele] = 20000*(1-meas)
 
 
