@@ -58,7 +58,7 @@ for i in range(0,nb_iter):
                 nb_epoch=10,
                 verbose = 1,
                 )
-    for allele in blind_allele_list:
+    for allele in ['A0101']:
         blind_peptides, blind_mhc, blind_Y = get_model_data(  [allele],
                                                             allele_sequence_data,
                                                             blind_allele_groups,
@@ -67,7 +67,7 @@ for i in range(0,nb_iter):
                                                             mhc_length=max_allele_length,
                                                             mhc_dense = None, )
         preds = graph.predict({'peptide':blind_peptides, 'mhc':blind_mhc})['output']
-        print preds
+        print blind_peptides, blind_mhc, blind_Y
         preds = preds.reshape(preds.shape[0])
         preds_allele[allele]+=(20000**(1-preds))/nb_iter
 
