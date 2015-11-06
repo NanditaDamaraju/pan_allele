@@ -78,9 +78,10 @@ for i in range(0,nb_iter):
 
 
 #sum_scores = np.zeros(6)
-calculated_metrics = []
+calculated_metrics = np.zeros(6)
 for allele in blind_allele_list:
-    Y_pred_allele = actual_allele[allele]
+    Y_pred_allele = preds_allele[allele]
+    Y_true_allele = actual_allele[allele]
     score_allele = scores(Y_true_allele, Y_pred_allele)
     calculated_metrics  += score_allele[0] * score_allele
 
