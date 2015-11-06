@@ -71,7 +71,7 @@ for i in range(0,nb_iter):
         preds = np.array(preds)
         meas = np.array(meas)
         try:
-            preds_allele[allele]+=(20000**(1-preds))/nb_iter
+            preds_allele[allele]+=preds/nb_iter
         except:
             preds_allele[allele]=(20000**(1-preds))/nb_iter
         actual_allele[allele] = meas
@@ -80,7 +80,7 @@ for i in range(0,nb_iter):
 #sum_scores = np.zeros(6)
 calculated_metrics = np.zeros(6)
 for allele in blind_allele_list:
-    Y_pred_allele = preds_allele[allele]
+    Y_pred_allele = 20000**(1-preds_allele[allele])
     Y_true_allele = actual_allele[allele]
     score_allele = scores(Y_true_allele, Y_pred_allele)
     calculated_metrics  += score_allele[0] * score_allele
