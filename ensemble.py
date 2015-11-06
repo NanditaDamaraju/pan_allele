@@ -33,7 +33,7 @@ blind_allele_list = sorted(create_allele_list(blind_allele_groups, allele_sequen
 
 
 print blind_allele_list
-nb_iter = 1
+nb_iter = 5
 preds_allele = defaultdict(list)
 actual_allele = defaultdict(list)
 
@@ -55,7 +55,7 @@ for i in range(0,nb_iter):
     Y_train, Y_test = split_train_test(Y,5)
 
     graph = get_graph_from_hyperparameters('ffn_mult')
-    graph.fit({'peptide':peptides, 'mhc':mhc, 'output': Y},
+    graph.fit({'peptide':peptides_train, 'mhc':mhc_train, 'output': Y_train},
                 batch_size=32,
                 nb_epoch=10,
                 verbose = 1,
