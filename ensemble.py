@@ -72,8 +72,9 @@ for i in range(0,nb_iter):
         preds = graph.predict({'peptide':blind_peptides, 'mhc':blind_mhc})['output']
 
         preds = preds.reshape(preds.shape[0])
-        print preds
+
         preds_allele[allele]+=(20000**(1-preds))/nb_iter
+        print preds, preds_allele[allele]
         actual_allele[allele] = 20000*(1-blind_Y)
 
 
