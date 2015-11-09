@@ -75,6 +75,7 @@ for i in range(0,nb_iter):
         except:
             preds_allele[allele]=preds/nb_iter
         actual_allele[allele] = meas
+        print scores(meas, 20000**(1-preds))
 
 
 #sum_scores = np.zeros(6)
