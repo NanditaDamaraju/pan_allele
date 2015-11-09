@@ -22,8 +22,9 @@ def split_train_test(arr, k_fold):
 
 
 def main():
+    max_ic50 = 20000
     #IEDB data
-    allele_groups, df = load_binding_data('pan_allele/files/bdata.2009.mhci.public.1.txt')
+    allele_groups, df = load_binding_data('pan_allele/files/bdata.2009.mhci.public.1.txt', max_ic50=max_ic50)
     graph = get_graph_from_hyperparameters('conv_mult')
     #allele sequence data
     allele_sequence_data, max_allele_length = load_allele_sequence_data('pan_allele/files/pseudo/pseudo_sequences.fasta')
