@@ -49,6 +49,8 @@ parser.add_argument(
 
 )
 
+#get AUC, Accuracy, F1, Precision, Recall
+#with true and predicted ic50 values as input
 def scores(Y_true, Y_pred):
     Y_true_binary = Y_true <=ic50_cutoff
     Y_pred_binary = Y_pred <= ic50_cutoff
@@ -68,6 +70,7 @@ def scores(Y_true, Y_pred):
         AUC = roc_auc_score(Y_true_binary, Y_pred_log)
     return np.array((length, AUC, ACC, F1, precision, recall))
 
+##read
 def read_blind_predictions(filename):
     predictions = collections.defaultdict(dict)
     with open(filename, 'rb') as csvfile:
@@ -132,7 +135,7 @@ def main():
             peptides = predictions.keys()
             allele_sequence_data, max_allele_length = load_allele_sequence_data('pan_allele/files/pseudo/pseudo_sequences.fasta')
             for peptide in peptides:
-                predictions[peptide]['mhcflurry'] = 20000**(1-make_prediction(peptide, allele_sequence_data[allele], graph))
+                predictions[peptide]['mhcflurry'] = max_ic50**(1-make_prediction(peptide, allele_sequence_data[allele], graph))
             df_pred = pd.DataFrame(predictions)
 
 
@@ -140,7 +143,7 @@ def main():
             Y_true_all[pos:pos+len(peptides)] =  Y_true_allele
 
             if (args.allele_info == True):
-                print "\n=====", allele, sum(Y_true_allele <= 500), len(Y_true_allele), "===="
+                print "\n=====", allele, sum(Y_true_allele <= ic50_cutoff), len(Y_true_allele), "===="
 
             for val in predictors:
                 Y_pred_allele = np.array(df_pred.loc[val])
@@ -152,13 +155,11 @@ def main():
             pos +=len(peptides)
 
         print epoch,
-        #print ",AUC\tACC\tF1\tPre\tRecall"
-
+``
         for val in predictors:
             calculated_metrics[val] = calculated_metrics[val]/data_len
             print val,',',
             scores_val = scores(Y_true_all, total_metrics[val])
-            #print scores_val[1:]
             print ','.join(map(str,calculated_metrics[val][1:]))
 
 

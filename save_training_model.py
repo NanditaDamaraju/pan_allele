@@ -34,6 +34,12 @@ parser.add_argument(
     type=int,
     help="number of epochs to train upto")
 
+parser.add_argument(
+    "--max_ic50",
+    default=20000,
+    type=int,
+    help="number of epochs to train upto")
+
 
 class LossHistory(keras.callbacks.Callback):
 
@@ -45,9 +51,9 @@ class LossHistory(keras.callbacks.Callback):
         model_save = self.model
         model_save.save_weights('weights/' + self.pred +  '/weights' + str(self.batch_size)+ '_' + str(epoch),overwrite=True)
 
-def save_model(graph, pred,  batch_size,nb_epoch):
+def save_model(graph, pred, batch_size,nb_epoch, max_ic50 = 20000):
 
-    allele_groups, df = load_binding_data('pan_allele/files/bdata.2009.mhci.public.1.txt')
+    allele_groups, df = load_binding_data('pan_allele/files/bdata.2009.mhci.public.1.txt', max_ic50 = max_ic50)
     allele_sequence_data, max_allele_length = load_allele_sequence_data('pan_allele/files/pseudo/pseudo_sequences.fasta')
     allele_list = sorted(create_allele_list(allele_groups, allele_sequence_data))
 
@@ -79,7 +85,7 @@ def main():
 
     for lr in learning_rates:
         for batch_size in batch_sizes:
-            save_model(graph, args.pred, args.batch_size, args.epochs)
+            save_model(graph, args.pred, args.batch_size, args.epochs, max_ic50=args.max_ic50)
 
 
 if __name__ == "__main__":
