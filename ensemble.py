@@ -83,7 +83,7 @@ def main():
 
             actual_allele[allele] = meas
 
-            print scores(meas, 20000**(1-preds))
+            print scores(meas, max_ic50**(1-preds))
 
 
     calculated_metrics = np.zeros(6)
@@ -91,7 +91,7 @@ def main():
 
     #calculate average for all the alleles
     for allele in blind_allele_list:
-        Y_pred_allele = 20000**(1-preds_allele[allele])
+        Y_pred_allele = max_ic50**(1-preds_allele[allele])
         Y_true_allele = actual_allele[allele]
         score_allele = scores(Y_true_allele, Y_pred_allele)
         calculated_metrics  += score_allele[0] * score_allele
