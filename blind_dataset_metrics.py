@@ -154,7 +154,7 @@ def main():
 
             pos +=len(peptides)
 
-        print epoch,
+        print '\n',epoch,
 
         for val in predictors:
             calculated_metrics[val] = calculated_metrics[val]/data_len
