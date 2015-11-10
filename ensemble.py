@@ -51,6 +51,7 @@ def main():
                                             mhc_length=max_allele_length,
                                             mhc_dense = None
                                          )
+
         #splitting peptides, mhcs and binding into training and test
         peptides_train, peptides_test = split_train_test(peptides,5)
         mhc_train, mhc_test = split_train_test(mhc,5)
@@ -94,10 +95,10 @@ def main():
         Y_pred_allele = max_ic50**(1-preds_allele[allele])
         Y_true_allele = actual_allele[allele]
         score_allele = scores(Y_true_allele, Y_pred_allele)
-        calculated_metrics  += score_allele[0] * score_allele
+        calculated_metrics  += score_allele
 
     data_len = sum(len(read_blind_predictions('combined-test-data/'+ allele + '.csv').keys()) for allele in blind_allele_list)
-    print calculated_metrics/data_len
+    print calculated_metrics/len(blind_allele_list)
 
 if __name__ == "__main__":
     main()
