@@ -79,16 +79,20 @@ def main():
         graph = get_graph_from_hyperparameters(args.pred)
         graph.fit({'peptide':peptides_train, 'mhc':mhc_train, 'output': Y_train},
                     batch_size=32,
-                    nb_epoch=9,
+                    nb_epoch=11,
                     verbose = 0,
                     )
 
         #calculate metrics for each allele
         for allele in blind_allele_list:
+            print i, allele
+
             predictions = read_blind_predictions('combined-test-data/'+ allele + '.csv')
             peptides = predictions.keys()
+
             preds = []
             meas = []
+
             for peptide in peptides:
                 preds.append(make_prediction(peptide, allele_sequence_data[allele],graph))
                 meas.append(predictions[peptide]['meas'])
@@ -102,12 +106,9 @@ def main():
 
             actual_allele[allele] = meas
 
-            print scores(meas, max_ic50**(1-preds))
 
 
     calculated_metrics = np.zeros(6)
-
-
     #calculate average for all the alleles
     for allele in blind_allele_list:
         Y_pred_allele = max_ic50**(1-preds_allele[allele])
