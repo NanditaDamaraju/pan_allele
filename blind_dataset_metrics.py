@@ -45,9 +45,15 @@ parser.add_argument(
     "--allele_info",
     default=False,
     type=bool,
-    help="display allele information or not"
+    help="display allele information or not")
 
-)
+parser.add_argument(
+    "--max_ic50",
+    default=20000,
+    type=int,
+    help="maximum ic50 value")
+
+
 
 #get AUC, Accuracy, F1, Precision, Recall
 #with true and predicted ic50 values as input
@@ -90,6 +96,7 @@ def main():
     args = parser.parse_args()
 
     graph = get_graph_from_hyperparameters(args.pred)
+    allele_sequence_data, max_allele_length = load_allele_sequence_data('pan_allele/files/pseudo/pseudo_sequences.fasta')
 
     predictors = ['mhcflurry','netmhcpan','netmhc','smmpmbec_cpp']
     #allele_list
@@ -105,12 +112,13 @@ def main():
 
 
     #Load graph
+
     batch_size = 32
     epoch_range = map(int, args.epoch.split(','))
 
     for epoch in range(epoch_range[0],epoch_range[1]):
 
-        graph.load_weights('weights/' + args.pred + '/weights' + str(batch_size) + '_'  + str(epoch) )
+        graph.load_weights('weights' + str(args.max_ic50) + '/'  + args.pred + '/weights' + str(batch_size) + '_'  + str(epoch) )
 
         #Initializing
         data_len = sum(len(read_blind_predictions('combined-test-data/'+ allele + '.csv').keys()) for allele in allele_list)
@@ -125,19 +133,18 @@ def main():
             calculated_metrics[val] = np.zeros(6)
 
 
-
         #calculating metrics per allele
         for allele in allele_list:
 
             filename = 'combined-test-data/'+ allele + '.csv'
-            predictions = read_blind_predictions(filename)
 
+            predictions = read_blind_predictions(filename)
             peptides = predictions.keys()
-            allele_sequence_data, max_allele_length = load_allele_sequence_data('pan_allele/files/pseudo/pseudo_sequences.fasta')
+
             for peptide in peptides:
                 predictions[peptide]['mhcflurry'] = max_ic50**(1-make_prediction(peptide, allele_sequence_data[allele], graph))
-            df_pred = pd.DataFrame(predictions)
 
+            df_pred = pd.DataFrame(predictions)
 
             Y_true_allele = np.array(df_pred.loc['meas'])
             Y_true_all[pos:pos+len(peptides)] =  Y_true_allele
@@ -146,19 +153,20 @@ def main():
                 print "\n=====", allele, sum(Y_true_allele <= ic50_cutoff), len(Y_true_allele), "===="
 
             for val in predictors:
+
                 Y_pred_allele = np.array(df_pred.loc[val])
                 calculated_metrics[val]  += scores(Y_true_allele, Y_pred_allele)
+
                 if (args.allele_info == True):
                     print val, scores(Y_true_allele, Y_pred_allele)
-                
+
             pos +=len(peptides)
 
         print '\n',epoch,
 
         for val in predictors:
             calculated_metrics[val] = calculated_metrics[val]/len(allele_list)
-            print val,',',
-            print ','.join(map(str,calculated_metrics[val][1:]))
+            print val,',',','.join(map(str,calculated_metrics[val][1:]))
 
 
 if __name__ == "__main__":

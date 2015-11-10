@@ -38,7 +38,7 @@ parser.add_argument(
     "--max_ic50",
     default=20000,
     type=int,
-    help="number of epochs to train upto")
+    help="maximum ic50 value")
 
 
 class LossHistory(keras.callbacks.Callback):

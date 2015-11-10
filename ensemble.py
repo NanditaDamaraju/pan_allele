@@ -14,6 +14,22 @@ from pan_allele.helpers.hyperparameters import get_graph_from_hyperparameters
 from blind_dataset_metrics import scores, read_blind_predictions
 from pan_allele.helpers.peptide_trim import make_prediction
 
+import argparse
+
+parser = argparse.ArgumentParser()
+
+parser.add_argument(
+    "--pred",
+    default='ffn_mult',
+    help="neural network type, `ffn_concat`, `ffn_mult` or `conv_mult`")
+
+parser.add_argument(
+    "--max_ic50",
+    default=20000,
+    type=int,
+    help="maximum ic50 value")
+
+
 #Splitting data into training and test sets
 def split_train_test(arr, k_fold):
     train = [x for i, x in enumerate(arr) if i%k_fold != 1]
@@ -22,10 +38,12 @@ def split_train_test(arr, k_fold):
 
 
 def main():
-    max_ic50 = 20000
+    args = parser.parse_args()
+    max_ic50 = args.max_ic50
     #IEDB data
     allele_groups, df = load_binding_data('pan_allele/files/bdata.2009.mhci.public.1.txt', max_ic50=max_ic50)
-    graph = get_graph_from_hyperparameters('conv_mult')
+    #graph initialized here so that pseudo sequences are made accordingly
+    graph = get_graph_from_hyperparameters(args.pred)
     #allele sequence data
     allele_sequence_data, max_allele_length = load_allele_sequence_data('pan_allele/files/pseudo/pseudo_sequences.fasta')
     allele_list = sorted(create_allele_list(allele_groups, allele_sequence_data))
@@ -58,7 +76,7 @@ def main():
         Y_train, Y_test = split_train_test(Y,5)
 
         #fit graph model
-        graph = get_graph_from_hyperparameters('conv_mult')
+        graph = get_graph_from_hyperparameters(args.pred)
         graph.fit({'peptide':peptides_train, 'mhc':mhc_train, 'output': Y_train},
                     batch_size=32,
                     nb_epoch=9,
