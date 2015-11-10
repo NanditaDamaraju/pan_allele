@@ -147,19 +147,17 @@ def main():
 
             for val in predictors:
                 Y_pred_allele = np.array(df_pred.loc[val])
-                calculated_metrics[val]  += len(peptides)*scores(Y_true_allele, Y_pred_allele)
+                calculated_metrics[val]  += scores(Y_true_allele, Y_pred_allele)
                 if (args.allele_info == True):
                     print val, scores(Y_true_allele, Y_pred_allele)
-                total_metrics[val][pos:pos+len(peptides)] = (Y_pred_allele)
-
+                
             pos +=len(peptides)
 
         print '\n',epoch,
 
         for val in predictors:
-            calculated_metrics[val] = calculated_metrics[val]/data_len
+            calculated_metrics[val] = calculated_metrics[val]/len(allele_list)
             print val,',',
-            scores_val = scores(Y_true_all, total_metrics[val])
             print ','.join(map(str,calculated_metrics[val][1:]))
 
 
