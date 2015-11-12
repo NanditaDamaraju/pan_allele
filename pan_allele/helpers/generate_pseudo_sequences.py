@@ -11,7 +11,7 @@ def create_fasta_file(remove_residues = False, consensus_cutoff = 0):
     sequence_array =[]
     allele_list = []
     if(remove_residues):
-        with open(HOME_PATH + '/files/trimmed-human-class1-IEDB.fasta','rU') as f:
+        with open(HOME_PATH + '/pan_allele/files/trimmed-human-class1-IEDB.fasta','rU') as f:
             for record in SeqIO.parse(f, 'fasta'):
                 name, sequence = record.description, str(record.seq)
                 name = name.split(' ')[0]
@@ -30,7 +30,7 @@ def create_fasta_file(remove_residues = False, consensus_cutoff = 0):
 
         all_sequences = []
 
-        with open(HOME_PATH + '/files/trimmed-human-class1.fasta', 'rU') as f:
+        with open(HOME_PATH + '/pan_allele/files/trimmed-human-class1.fasta', 'rU') as f:
             for record in SeqIO.parse(f, 'fasta'):
                 name, sequence = record.description, str(record.seq)
                 name = name.split(' ')[0]
@@ -42,13 +42,13 @@ def create_fasta_file(remove_residues = False, consensus_cutoff = 0):
         pseudo_sequences = np.delete(sequence_mat,delete_columns,axis=1)
         pseudo_sequences = [''.join(chars) for chars in pseudo_sequences ]
 
-        with open(HOME_PATH+ '/files/pseudo/pseudo_sequences.fasta','w') as f:
+        with open(HOME_PATH+ '/pan_allele/files/pseudo/pseudo_sequences.fasta','w') as f:
              for index in range(0,len(pseudo_sequences)):
                  f.write("\n>"+allele_list[index]+"\n"+pseudo_sequences[index])
 
     else:
 
-        with open(HOME_PATH+ '/files/trimmed-human-class1.fasta','rU') as f:
-            with open(HOME_PATH + '/files/pseudo/pseudo_sequences.fasta', "w") as f1:
+        with open(HOME_PATH+ '/pan_allele/files/trimmed-human-class1.fasta','rU') as f:
+            with open(HOME_PATH + '/pan_allele/files/pseudo/pseudo_sequences.fasta', "w") as f1:
                 for line in f:
                     f1.write(line)
