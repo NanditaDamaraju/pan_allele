@@ -1,3 +1,7 @@
+from paths import *
+import sys
+sys.path.append(HOME_PATH)
+
 import pandas as pd
 import numpy as np
 from collections import defaultdict
@@ -7,7 +11,7 @@ from pan_allele.helpers.hyperparameters import get_graph_from_hyperparameters
 from pan_allele.helpers.peptide_trim import make_prediction
 
 from blind_dataset_metrics import scores, read_blind_predictions
-from paths import *
+
 
 import argparse
 
