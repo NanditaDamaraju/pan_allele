@@ -48,7 +48,7 @@ class LossHistory(keras.callbacks.Callback):
 
     def on_epoch_end(self, epoch, logs={}):
         model_save = self.model
-        model_save.save_weights(path + 'weights50000/' + self.pred +  '/weights' + str(self.batch_size)+ '_' + str(epoch),overwrite=True)
+        model_save.save_weights(path + '/weights50000/' + self.pred +  '/weights' + str(self.batch_size)+ '_' + str(epoch),overwrite=True)
 
 def save_model(graph, pred, batch_size,nb_epoch, max_ic50 = 20000):
 

@@ -120,10 +120,10 @@ def main():
 
     for epoch in range(epoch_range[0],epoch_range[1]):
 
-        graph.load_weights('weights' + str(args.max_ic50) + '/'  + args.pred + '/weights' + str(batch_size) + '_'  + str(epoch) )
+        graph.load_weights(path + '/weights' + str(args.max_ic50) + '/'  + args.pred + '/weights' + str(batch_size) + '_'  + str(epoch) )
 
         #Initializing
-        data_len = sum(len(read_blind_predictions('combined-test-data/'+ allele + '.csv').keys()) for allele in allele_list)
+        data_len = sum(len(read_blind_predictions(path + '/combined-test-data/'+ allele + '.csv').keys()) for allele in allele_list)
         Y_true_all = np.zeros(data_len)
         total_metrics = collections.defaultdict(list)
         for val in predictors:
@@ -138,7 +138,7 @@ def main():
         #calculating metrics per allele
         for allele in allele_list:
 
-            filename = 'combined-test-data/'+ allele + '.csv'
+            filename = path + '/combined-test-data/'+ allele + '.csv'
 
             predictions = read_blind_predictions(filename)
             peptides = predictions.keys()
