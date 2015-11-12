@@ -3,12 +3,6 @@ Takes the model type as input and provides the
 AUC, Accuracy, F1, precision and recall
 '''
 
-import os
-import sys
-path = os.path.split(os.getcwd())[0]
-sys.path.append(path)
-
-
 from pan_allele.helpers.hyperparameters import get_graph_from_hyperparameters
 from pan_allele.helpers.peptide_trim import make_prediction
 from pan_allele.helpers.pan_allele_data_helpers import *
@@ -120,10 +114,10 @@ def main():
 
     for epoch in range(epoch_range[0],epoch_range[1]):
 
-        graph.load_weights(path + '/weights' + str(args.max_ic50) + '/'  + args.pred + '/weights' + str(batch_size) + '_'  + str(epoch) )
+        graph.load_weights(HOME_PATH + '/weights' + str(args.max_ic50) + '/'  + args.pred + '/weights' + str(batch_size) + '_'  + str(epoch) )
 
         #Initializing
-        data_len = sum(len(read_blind_predictions(path + '/combined-test-data/'+ allele + '.csv').keys()) for allele in allele_list)
+        data_len = sum(len(read_blind_predictions(HOME_PATH + '/combined-test-data/'+ allele + '.csv').keys()) for allele in allele_list)
         Y_true_all = np.zeros(data_len)
         total_metrics = collections.defaultdict(list)
         for val in predictors:
@@ -138,7 +132,7 @@ def main():
         #calculating metrics per allele
         for allele in allele_list:
 
-            filename = path + '/combined-test-data/'+ allele + '.csv'
+            filename = HOME_PATH + '/combined-test-data/'+ allele + '.csv'
 
             predictions = read_blind_predictions(filename)
             peptides = predictions.keys()

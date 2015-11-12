@@ -1,8 +1,3 @@
-import os
-import sys
-path = os.path.split(os.getcwd())[0]
-sys.path.append(path)
-
 
 from pan_allele.helpers.pan_allele_data_helpers import *
 from pan_allele.helpers.hyperparameters import get_graph_from_hyperparameters
@@ -31,7 +26,7 @@ allele_list = ['A0101',	    'A0201',	'A0202',    'A0203',	'A0206',	'A0301',
 
 graph = get_graph_from_hyperparameters('ffn_mult')
 for epoch in range(1,99):
-    graph.load_weights(path + 'weights/ffn_mult/weights32_' + str(epoch))
+    graph.load_weights(HOME_PATH + 'weights/ffn_mult/weights32_' + str(epoch))
     predictions = np.empty(len(allele_list)*nb_peptides)
     counter = 0
     for allele in allele_list:
