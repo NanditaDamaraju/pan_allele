@@ -76,7 +76,7 @@ def main():
         graph = get_graph_from_hyperparameters(args.pred)
         graph.fit({'peptide':peptides_train, 'mhc':mhc_train, 'output': Y_train},
                     batch_size=32,
-                    nb_epoch=12,
+                    nb_epoch=13,
                     verbose = 0,
                     )
 
