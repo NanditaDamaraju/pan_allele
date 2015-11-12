@@ -5,8 +5,7 @@ AUC, Accuracy, F1, precision and recall
 
 import sys
 import os
-path = os.getcwd()
-sys.path.append(path)
+sys.path.append(os.path.split(os.getcwd())[0])
 
 
 from pan_allele.helpers.hyperparameters import get_graph_from_hyperparameters

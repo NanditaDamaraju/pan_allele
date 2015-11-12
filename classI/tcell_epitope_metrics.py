@@ -1,7 +1,6 @@
-import sys
 import os
-path = os.getcwd()
-sys.path.append(path)
+import sys
+sys.path.append(os.path.split(os.getcwd())[0])
 
 from pan_allele.helpers.peptide_trim import make_prediction
 from pan_allele.helpers.generate_pseudo_sequences import create_fasta_file

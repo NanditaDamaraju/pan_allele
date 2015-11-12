@@ -1,9 +1,6 @@
 import os
 import sys
-from sys import argv
-
-path = os.getcwd()
-sys.path.append(path)
+sys.path.append(os.path.split(os.getcwd())[0])
 
 import pandas as pd
 import numpy as np

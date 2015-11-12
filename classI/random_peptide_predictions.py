@@ -1,3 +1,7 @@
+import os
+import sys
+sys.path.append(os.path.split(os.getcwd())[0])
+
 import numpy as np
 from pan_allele.helpers.pan_allele_data_helpers import *
 from pan_allele.helpers.hyperparameters import get_graph_from_hyperparameters
