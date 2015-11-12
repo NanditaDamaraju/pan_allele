@@ -1,6 +1,7 @@
 import os
 import sys
-sys.path.append(os.path.split(os.getcwd())[0])
+path = os.path.split(os.getcwd())[0]
+sys.path.append(path)
 
 import pandas as pd
 import numpy as np
@@ -8,8 +9,10 @@ from collections import defaultdict
 
 from pan_allele.helpers.pan_allele_data_helpers import *
 from pan_allele.helpers.hyperparameters import get_graph_from_hyperparameters
-from blind_dataset_metrics import scores, read_blind_predictions
 from pan_allele.helpers.peptide_trim import make_prediction
+
+from blind_dataset_metrics import scores, read_blind_predictions
+from paths import *
 
 import argparse
 
@@ -38,11 +41,11 @@ def main():
     args = parser.parse_args()
     max_ic50 = args.max_ic50
     #IEDB data
-    allele_groups, df = load_binding_data('pan_allele/files/bdata.2009.mhci.public.1.txt', max_ic50=max_ic50)
+    allele_groups, df = load_binding_data(BINDING_DATA_PATH, max_ic50=max_ic50)
     #graph initialized here so that pseudo sequences are made accordingly
     graph = get_graph_from_hyperparameters(args.pred)
     #allele sequence data
-    allele_sequence_data, max_allele_length = load_allele_sequence_data('pan_allele/files/pseudo/pseudo_sequences.fasta')
+    allele_sequence_data, max_allele_length = load_allele_sequence_data(SEQUENCE_DATA_PATH)
     allele_list = sorted(create_allele_list(allele_groups, allele_sequence_data))
 
     #reading blind data from txt file that contains aggregated data for all alleles

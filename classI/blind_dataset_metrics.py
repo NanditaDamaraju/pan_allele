@@ -3,14 +3,17 @@ Takes the model type as input and provides the
 AUC, Accuracy, F1, precision and recall
 '''
 
-import sys
 import os
-sys.path.append(os.path.split(os.getcwd())[0])
+import sys
+path = os.path.split(os.getcwd())[0]
+sys.path.append(path)
 
 
 from pan_allele.helpers.hyperparameters import get_graph_from_hyperparameters
 from pan_allele.helpers.peptide_trim import make_prediction
 from pan_allele.helpers.pan_allele_data_helpers import *
+
+from paths import *
 
 from keras.models import Graph
 from sklearn.metrics import roc_auc_score, f1_score, accuracy_score, precision_score, recall_score
@@ -95,7 +98,7 @@ def main():
     args = parser.parse_args()
 
     graph = get_graph_from_hyperparameters(args.pred)
-    allele_sequence_data, max_allele_length = load_allele_sequence_data('pan_allele/files/pseudo/pseudo_sequences.fasta')
+    allele_sequence_data, max_allele_length = load_allele_sequence_data(BINDING_DATA_PATH)
 
     predictors = ['mhcflurry','netmhcpan','netmhc','smmpmbec_cpp']
     #allele_list

@@ -8,6 +8,8 @@ import numpy as np
 from pan_allele.helpers.pan_allele_data_helpers import *
 from pan_allele.helpers.hyperparameters import get_graph_from_hyperparameters
 
+from paths import *
+
 import keras
 import collections
 import argparse
@@ -46,12 +48,12 @@ class LossHistory(keras.callbacks.Callback):
 
     def on_epoch_end(self, epoch, logs={}):
         model_save = self.model
-        model_save.save_weights('weights50000/' + self.pred +  '/weights' + str(self.batch_size)+ '_' + str(epoch),overwrite=True)
+        model_save.save_weights(path + 'weights50000/' + self.pred +  '/weights' + str(self.batch_size)+ '_' + str(epoch),overwrite=True)
 
 def save_model(graph, pred, batch_size,nb_epoch, max_ic50 = 20000):
 
-    allele_groups, df = load_binding_data('pan_allele/files/bdata.2009.mhci.public.1.txt', max_ic50 = max_ic50)
-    allele_sequence_data, max_allele_length = load_allele_sequence_data('pan_allele/files/pseudo/pseudo_sequences.fasta')
+    allele_groups, df = load_binding_data(BINDING_DATA_PATH, max_ic50 = max_ic50)
+    allele_sequence_data, max_allele_length = load_allele_sequence_data(SEQUENCE_DATA_PATH)
     allele_list = sorted(create_allele_list(allele_groups, allele_sequence_data))
 
     peptide_train, mhc_train, Y_train = get_model_data(allele_list,

@@ -1,17 +1,22 @@
 import os
 import sys
-sys.path.append(os.path.split(os.getcwd())[0])
+path = os.path.split(os.getcwd())[0]
+sys.path.append(path)
 
-import numpy as np
+
 from pan_allele.helpers.pan_allele_data_helpers import *
 from pan_allele.helpers.hyperparameters import get_graph_from_hyperparameters
+
+from paths import *
+
+import numpy as np
 
 nb_peptides = 100
 peptides = []
 for i in range(nb_peptides):
     peptides.append(np.random.randint(20, size=9))
 
-allele_sequence_data, max_allele_length = load_allele_sequence_data('pan_allele/files/pseudo/pseudo_sequences.fasta')
+allele_sequence_data, max_allele_length = load_allele_sequence_data(SEQUENCE_DATA_PATH)
 
 
 allele_list = ['A0101',	    'A0201',	'A0202',    'A0203',	'A0206',	'A0301',
@@ -22,9 +27,11 @@ allele_list = ['A0101',	    'A0201',	'A0202',    'A0203',	'A0206',	'A0301',
                'B1517',	    'B1801',	'B2703',    'B2705',    'B3501',	'B3801',
                'B3901',	    'B4001',	'B4002',	'B4402',	'B4403',	'B4501',
                'B4601',	    'B5101',    'B5301',	'B5401',	'B5701',	'B5801'	]
+
+
 graph = get_graph_from_hyperparameters('ffn_mult')
 for epoch in range(1,99):
-    graph.load_weights('weights/ffn_mult/weights32_' + str(epoch))
+    graph.load_weights(path + 'weights/ffn_mult/weights32_' + str(epoch))
     predictions = np.empty(len(allele_list)*nb_peptides)
     counter = 0
     for allele in allele_list:
