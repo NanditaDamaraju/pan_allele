@@ -1,8 +1,3 @@
-import os
-import sys
-path = os.path.split(os.getcwd())[0]
-sys.path.append(path)
-
 import pandas as pd
 import numpy as np
 from collections import defaultdict
@@ -87,7 +82,7 @@ def main():
         for allele in blind_allele_list:
             print i, allele
 
-            predictions = read_blind_predictions('combined-test-data/'+ allele + '.csv')
+            predictions = read_blind_predictions(HOME_PATH + '/combined-test-data/'+ allele + '.csv')
             peptides = predictions.keys()
 
             preds = []
