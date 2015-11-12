@@ -1,0 +1,2 @@
+species mhc peptide_length	cv	sequence	inequality meas
+human   HLAB1501    9   TBD   ACDEFGHIK   =   400
