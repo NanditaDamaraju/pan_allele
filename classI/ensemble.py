@@ -115,7 +115,7 @@ def main():
         score_allele = scores(Y_true_allele, Y_pred_allele)
         calculated_metrics  += score_allele
 
-    data_len = sum(len(read_blind_predictions('combined-test-data/'+ allele + '.csv').keys()) for allele in blind_allele_list)
+    data_len = sum(len(read_blind_predictions(HOME_PATH + '/combined-test-data/'+ allele + '.csv').keys()) for allele in blind_allele_list)
     print calculated_metrics/len(blind_allele_list)
 
 if __name__ == "__main__":
