@@ -64,36 +64,6 @@ def load_binding_data(
             peptides=peptides)
     return allele_groups, df
 
-def load_similarity_data(allele_sequence_data, file_similarity):
-
-    X = []
-    Y = []
-
-    with  open(file_similarity,'rb') as f:
-        reader = csv.DictReader(f)
-        for row in reader:
-
-            allele_x = row['allele1']
-            allele_y = row['allele2']
-            similarity = row['similarity']
-            weight = row['overlap']
-            try:
-                allele_sequence_data[allele_x]
-                allele_sequence_data[allele_y]
-                if( (allele_x!=allele_y) and (similarity!='nan') and (float(weight) >= 25)):
-                    X.append(allele_sequence_data[allele_x])
-                    X.append(allele_sequence_data[allele_y])
-                    Y.append(float(similarity))
-                    Y.append(float(similarity))
-            except:
-                pass
-
-    Y = np.array(Y)
-    X_encoded = padded_indices(X, index_dict=amino_acid_letter_indices,
-                            add_end_symbol=False,add_start_symbol=False)
-    return X_encoded, Y
-
-
 def create_allele_list(allele_binding_data, allele_sequence_data):
     '''
     List alleles present in both allele binding and sequence data.

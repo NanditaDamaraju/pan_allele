@@ -51,7 +51,7 @@ def main():
     blind_allele_groups, blind_df = load_binding_data('blind_data.txt')
     blind_allele_list = sorted(create_allele_list(blind_allele_groups, allele_sequence_data))
 
-    nb_iter = 10
+    nb_iter = 50
     preds_allele = defaultdict(list)
     actual_allele = defaultdict(list)
 
@@ -78,7 +78,7 @@ def main():
         graph = get_graph_from_hyperparameters(args.pred)
         graph.fit({'peptide':peptides_train, 'mhc':mhc_train, 'output': Y_train},
                     batch_size=32,
-                    nb_epoch=13,
+                    nb_epoch=12,
                     verbose = 0,
                     )
 
