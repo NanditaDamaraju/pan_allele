@@ -47,6 +47,11 @@ def load_binding_data(
         length_mask = df["peptide_length"] == peptide_length
         df = df[length_mask]
 
+    #remove entries where peptides have  '+' or '_'    
+    peptide_mask_1 = df['sequence'].str.find('-')<0
+    peptide_mask_2 = df['sequence'].str.find('+')<0
+    df = df[peptide_mask_1&peptide_mask_2]
+
     allele_groups = {}
 
     for allele, group in df.groupby("mhc"):
