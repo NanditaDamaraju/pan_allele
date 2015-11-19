@@ -94,7 +94,7 @@ def main():
     args = parser.parse_args()
 
     graph = get_graph_from_hyperparameters(args.pred)
-    allele_sequence_data, max_allele_length = load_allele_sequence_data(BINDING_DATA_PATH)
+    allele_sequence_data, max_allele_length = load_allele_sequence_data(SEQUENCE_DATA_PATH)
 
     predictors = ['mhcflurry','netmhcpan','netmhc','smmpmbec_cpp']
     #allele_list
