@@ -52,7 +52,7 @@ class LossHistory(keras.callbacks.Callback):
 
 def save_model(graph, pred, batch_size,nb_epoch, max_ic50 = 20000):
 
-    allele_groups, df = load_binding_data(BINDING_DATA_PATH, max_ic50 = max_ic50)
+    allele_groups, df = load_binding_data(BINDING_DATA_PATH, max_ic50 = max_ic50, peptide_length = 9)
     allele_sequence_data, max_allele_length = load_allele_sequence_data(SEQUENCE_DATA_PATH)
     allele_list = sorted(create_allele_list(allele_groups, allele_sequence_data))
 

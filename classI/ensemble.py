@@ -41,7 +41,7 @@ def main():
     max_ic50 = args.max_ic50
 
     #IEDB data
-    allele_groups, df = load_binding_data(BINDING_DATA_PATH, max_ic50=max_ic50)
+    allele_groups, df = load_binding_data(BINDING_DATA_PATH, max_ic50=max_ic50, peptide_length=9)
 
     #graph initialized here so that pseudo sequences are made accordingly
     graph = get_graph_from_hyperparameters(args.pred)
@@ -51,7 +51,7 @@ def main():
     allele_list = sorted(create_allele_list(allele_groups, allele_sequence_data))
 
     #reading blind data from txt file that contains aggregated data for all alleles
-    blind_allele_groups, blind_df = load_binding_data('blind_data.txt')
+    blind_allele_groups, blind_df = load_binding_data('blind_data.txt', max_ic50=max_ic50, peptide_length=None)
     blind_allele_list = sorted(create_allele_list(blind_allele_groups, allele_sequence_data))
 
     nb_iter = 50 #number of networks to include in the ensemble

@@ -29,9 +29,8 @@ def load_allele_sequence_data(file_fasta):
 
 def load_binding_data(
         filename,
-        peptide_length=9,
+        peptide_length=None,
         max_ic50=50000.0,
-        peptide_length_mask=True
     ):
     """
     Loads an IEDB dataset and returns a dictionary with alleles as keys
@@ -44,7 +43,7 @@ def load_binding_data(
     human_mask = df["species"] == "human"
     df = df[human_mask]
 
-    if peptide_length_mask=True:
+    if peptide_length_mask is not None:
         length_mask = df["peptide_length"] == peptide_length
         df = df[length_mask]
 
@@ -61,8 +60,8 @@ def load_binding_data(
             allele = allele.replace(substring, "")
         ic50 = np.array(group["meas"])
         log_ic50 = 1.0 - np.log(ic50) / np.log(max_ic50)
-        Y = np.maximum(0.0, log_ic50)
-        Y = np.minimum(1.0, Y)
+        log_ic50 = np.maximum(0.0, log_ic50)
+        log_ic50 = np.minimum(1.0, log_ic50)
         peptides = list(group["sequence"])
 
         allele_groups[allele] = AlleleData(
