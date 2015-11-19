@@ -80,7 +80,7 @@ def main():
 
     graph = get_graph_from_hyperparameters(args.pred)
     batch_size = 32
-
+    max_ic50 = 50000
     ##Load graph
     epoch_range = map(int, args.epoch.split(','))
     #graph.set_weights(initial_weights)

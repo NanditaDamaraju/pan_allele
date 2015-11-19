@@ -31,12 +31,12 @@ parser = argparse.ArgumentParser()
 
 parser.add_argument(
     "--pred",
-    default='ffn_mult',
+    default='conv_mult',
     help="neural network type, `ffn_concat`, `ffn_mult` or `conv_mult`")
 
 parser.add_argument(
     "--epoch",
-    default="25,26",
+    default="11,12",
     help="model at which epoch to choose")
 
 parser.add_argument(
