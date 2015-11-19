@@ -3,11 +3,13 @@ Takes the model type as input and provides the
 AUC, Accuracy, F1, precision and recall
 '''
 
+from paths import *
+import sys
+sys.path.append(HOME_PATH)
+
 from pan_allele.helpers.hyperparameters import get_graph_from_hyperparameters
 from pan_allele.helpers.peptide_trim import make_prediction
 from pan_allele.helpers.pan_allele_data_helpers import *
-
-from paths import *
 
 from keras.models import Graph
 from sklearn.metrics import roc_auc_score, f1_score, accuracy_score, precision_score, recall_score

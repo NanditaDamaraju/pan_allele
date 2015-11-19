@@ -1,3 +1,7 @@
+from paths import *
+import sys
+sys.path.append(HOME_PATH)
+
 import pandas as pd
 import numpy as np
 
