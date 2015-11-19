@@ -39,10 +39,13 @@ def split_train_test(arr, k_fold):
 def main():
     args = parser.parse_args()
     max_ic50 = args.max_ic50
+
     #IEDB data
     allele_groups, df = load_binding_data(BINDING_DATA_PATH, max_ic50=max_ic50)
+
     #graph initialized here so that pseudo sequences are made accordingly
     graph = get_graph_from_hyperparameters(args.pred)
+
     #allele sequence data
     allele_sequence_data, max_allele_length = load_allele_sequence_data(SEQUENCE_DATA_PATH)
     allele_list = sorted(create_allele_list(allele_groups, allele_sequence_data))
@@ -51,11 +54,10 @@ def main():
     blind_allele_groups, blind_df = load_binding_data('blind_data.txt')
     blind_allele_list = sorted(create_allele_list(blind_allele_groups, allele_sequence_data))
 
-    nb_iter = 50
+    nb_iter = 50 #number of networks to include in the ensemble
+
     preds_allele = defaultdict(list)
     actual_allele = defaultdict(list)
-
-
 
     for i in range(0,nb_iter):
 
@@ -63,10 +65,8 @@ def main():
         peptides, mhc, Y = get_model_data(  allele_list,
                                             allele_sequence_data,
                                             allele_groups,
-                                            dense_mhc_model=None,
                                             peptide_length = 9,
-                                            mhc_length=max_allele_length,
-                                            mhc_dense = None
+                                            mhc_length=max_allele_length
                                          )
 
         #splitting peptides, mhcs and binding into training and test
@@ -106,9 +106,9 @@ def main():
             actual_allele[allele] = meas
 
 
+    #calculate average for all the alleles
 
     calculated_metrics = np.zeros(6)
-    #calculate average for all the alleles
     for allele in blind_allele_list:
         Y_pred_allele = max_ic50**(1-preds_allele[allele])
         Y_true_allele = actual_allele[allele]

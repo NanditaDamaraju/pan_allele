@@ -30,7 +30,7 @@ def load_allele_sequence_data(file_fasta):
 def load_binding_data(
         filename,
         peptide_length=9,
-        max_ic50=5000.0,
+        max_ic50=50000.0,
     ):
     """
     Loads an IEDB dataset and returns a dictionary with alleles as keys
@@ -55,7 +55,9 @@ def load_binding_data(
         for substring in bad_hla_name_elements:
             allele = allele.replace(substring, "")
         ic50 = np.array(group["meas"])
-        Y = np.maximum(0.0, 1.0 - np.log(ic50) / np.log(max_ic50))
+        log_ic50 = 1.0 - np.log(ic50) / np.log(max_ic50)
+        Y = np.maximum(0.0, log_ic50)
+        Y = np.minimum(1.0, Y)
         peptides = list(group["sequence"])
 
         allele_groups[allele] = AlleleData(
@@ -82,10 +84,8 @@ def create_allele_list(allele_binding_data, allele_sequence_data):
 def get_model_data(allele_list,
                 allele_sequence_data,
                 allele_binding_data,
-                dense_mhc_model,
                 peptide_length =9,
                 mhc_length=None,
-                mhc_dense = True
                 ):
 
     '''
@@ -122,8 +122,6 @@ def get_model_data(allele_list,
                                 add_end_symbol=False,
                                 index_dict=amino_acid_letter_indices)
 
-        if(mhc_dense):
-            mhc_seq = dense_mhc_model.predict([mhc_seq])
         X_mhc[index:end_index] =  np.tile(mhc_seq,(len(peptides),1))
 
 
