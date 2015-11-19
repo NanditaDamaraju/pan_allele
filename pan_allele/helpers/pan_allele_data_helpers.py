@@ -31,6 +31,7 @@ def load_binding_data(
         filename,
         peptide_length=9,
         max_ic50=50000.0,
+        peptide_length_mask=True
     ):
     """
     Loads an IEDB dataset and returns a dictionary with alleles as keys
@@ -41,8 +42,12 @@ def load_binding_data(
 
     df = pd.read_csv(filename, sep="\t")
     human_mask = df["species"] == "human"
-    length_mask = df["peptide_length"] == peptide_length
-    df = df[human_mask & length_mask]
+    df = df[human_mask]
+
+    if peptide_length_mask=True:
+        length_mask = df["peptide_length"] == peptide_length
+        df = df[length_mask]
+
     allele_groups = {}
 
     for allele, group in df.groupby("mhc"):

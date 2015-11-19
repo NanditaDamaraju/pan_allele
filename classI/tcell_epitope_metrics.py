@@ -26,7 +26,7 @@ parser.add_argument(
 
 parser.add_argument(
     "--epoch",
-    default="25,26",
+    default="11,12",
     help="model at which epoch to choose")
 
 
