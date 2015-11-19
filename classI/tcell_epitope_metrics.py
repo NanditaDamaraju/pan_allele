@@ -16,9 +16,6 @@ import pandas as pd
 import csv
 import argparse
 
-max_ic50 = 20000
-ic50_cutoff = 500
-
 parser = argparse.ArgumentParser()
 
 parser.add_argument(
@@ -85,7 +82,7 @@ def main():
     epoch_range = map(int, args.epoch.split(','))
     #graph.set_weights(initial_weights)
     for epoch in range(epoch_range[0], epoch_range[1]) :
-        graph.load_weights('weights'+str(max_ic50)+'/' + args.pred + '/weights' + str(batch_size)+ '_'  + str(epoch) )
+        graph.load_weights(HOME_PATH + '/weights'+str(max_ic50)+'/' + args.pred + '/weights' + str(batch_size)+ '_'  + str(epoch) )
         allele_sequence_data, max_allele_length = load_allele_sequence_data('pan_allele/files/pseudo/pseudo_sequences.fasta')
 
         predictions = read_tcell_predictions('paper_data/iedb-tcell-2009-negative.csv','paper_data/iedb-tcell-2009-positive.csv')
