@@ -457,7 +457,7 @@ def convolution_graph_matrix(hyperparameters = None,
                         nb_filter=nb_filters['mhc'],
                         filter_length=filter_lengths['mhc'],
                         border_mode="valid",
-                        activation="tanh",  ##change to relu
+                        activation="relu",
                         subsample_length=1),
 
                     name = 'mhc_conv_1',
@@ -509,7 +509,7 @@ def convolution_graph_matrix(hyperparameters = None,
                     nb_filter=nb_filters['peptide'],
                     filter_length=filter_lengths['peptide'],
                     border_mode="valid",
-                    activation="tanh",  ##change to relu
+                    activation="relu",
                     subsample_length=1),
 
                 name = 'peptide_conv',
@@ -534,7 +534,7 @@ def convolution_graph_matrix(hyperparameters = None,
     graph.add_node( Dense(
                         input_dim = mult_size['mhc_n'],
                         output_dim = layer_sizes['merged_hidden_size'],
-                        activation = "tanh"),  ##change to relu
+                        activation = "relu"),
                 name='merged_output',
                 inputs=[last_peptide,last_mhc],
                 merge_mode='dot'

@@ -112,7 +112,7 @@ def build_graph_native_sequence_model(
     graph.add_node(
             Dense(  input_dim = size_dict['mhc_hidden_size'] + size_dict['peptide_hidden_size'],
                     output_dim = size_dict['combined_hidden_size'],
-                    activation = 'tanh'),
+                    activation = 'relu'),
             name='dense_merged_1',
             inputs=[dropout_output_peptide,dropout_output_mhc],
             merge_mode='concat')
@@ -127,7 +127,7 @@ def build_graph_native_sequence_model(
     graph.add_node(
             Dense(  input_dim = size_dict['combined_hidden_size'],
                     output_dim = size_dict['combined_hidden_final'],
-                    activation = 'tanh'),
+                    activation = 'relu'),
             name = 'dense_merged_2',
             input = 'dense_dropout_1')
 
@@ -273,7 +273,7 @@ def ffn_matrix(
     graph.add_node(
             Dense(  input_dim = mult_size['mhc_n'],
                     output_dim = size_dict['combined_hidden_size'],
-                    activation = "tanh"),
+                    activation = "relu"),
             name='dense_merged_1',
             inputs=[dropout_output_peptide,'mhc_final'],
             merge_mode='dot')
@@ -284,11 +284,10 @@ def ffn_matrix(
             name = 'dense_dropout_1',
             input='dense_merged_1')
 
-##Check why relu is not working
     graph.add_node(
             Dense(  input_dim = size_dict['combined_hidden_size'],
                     output_dim = size_dict['combined_hidden_final'],
-                    activation = "tanh"),
+                    activation = "relu"),
             name = 'dense_merged_2',
             input = 'dense_dropout_1')
 
