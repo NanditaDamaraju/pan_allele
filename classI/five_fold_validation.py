@@ -1,10 +1,13 @@
-from __future__ import print_function
-from pan_allele_data_helpers import *
-from generate_pseudo_sequences import create_fasta_file
-from feedforward_models import build_graph_native_sequence_model, build_graph_siamese_embedding_model, build_sequential_model
+from paths import *
+import sys
+sys.path.append(HOME_PATH)
+
+from pan_allele.helpers.pan_allele_data_helpers import *
+from pan_allele.helpers.generate_pseudo_sequences import create_fasta_file
+from pan_allele.helpers.feedforward_models import build_graph_native_sequence_model, build_graph_siamese_embedding_model, build_sequential_model
+from pan_allele.convolution_model import convolution_graph_matrix
+
 from sklearn.metrics import roc_auc_score, accuracy_score
-from convolution_model import convolution_graph, convolution_graph_reshape,convolution_graph_matrix
-from test_params import test_params
 import keras
 #path = "/Users/NanditaD/Intern/mhclearn"
 path="/home/ubuntu"

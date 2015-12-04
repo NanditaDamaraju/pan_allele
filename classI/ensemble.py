@@ -109,14 +109,14 @@ def main():
     #calculate average for all the alleles
 
     calculated_metrics = np.zeros(6)
+
     for allele in blind_allele_list:
         Y_pred_allele = max_ic50**(1-preds_allele[allele])
         Y_true_allele = actual_allele[allele]
         score_allele = scores(Y_true_allele, Y_pred_allele)
-        calculated_metrics  += score_allele
+        calculated_metrics  += score_allele ##sum metrics for all alleles
 
-    data_len = sum(len(read_blind_predictions(HOME_PATH + '/combined-test-data/'+ allele + '.csv').keys()) for allele in blind_allele_list)
-    print calculated_metrics/len(blind_allele_list)
+    print calculated_metrics/len(blind_allele_list) #divide sum by number of alleles
 
 if __name__ == "__main__":
     main()

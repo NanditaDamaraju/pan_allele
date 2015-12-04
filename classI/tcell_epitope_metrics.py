@@ -26,7 +26,7 @@ parser.add_argument(
 
 parser.add_argument(
     "--epoch",
-    default="11,12",
+    default="25,26",
     help="model at which epoch to choose")
 
 
@@ -84,6 +84,7 @@ def main():
     #graph.set_weights(initial_weights)
     for epoch in range(epoch_range[0], epoch_range[1]) :
         graph.load_weights(HOME_PATH + '/weights' + str(max_ic50) + '/'  + args.pred + '/weights' + str(batch_size) + '_'  + str(epoch) )
+
         allele_sequence_data, max_allele_length = load_allele_sequence_data(HOME_PATH + '/pan_allele/files/pseudo/pseudo_sequences.fasta')
 
         predictions = read_tcell_predictions(HOME_PATH + '/pan_allele/files/iedb-tcell-2009-negative.csv',HOME_PATH + '/pan_allele/files/iedb-tcell-2009-positive.csv')

@@ -43,11 +43,11 @@ def load_binding_data(
     human_mask = df["species"] == "human"
     df = df[human_mask]
 
-    if peptide_length_mask is not None:
+    if peptide_length is not None:
         length_mask = df["peptide_length"] == peptide_length
         df = df[length_mask]
 
-    #remove entries where peptides have  '+' or '_'    
+    #remove entries where peptides have  '+' or '_'
     peptide_mask_1 = df['sequence'].str.find('-')<0
     peptide_mask_2 = df['sequence'].str.find('+')<0
     df = df[peptide_mask_1&peptide_mask_2]
@@ -70,7 +70,7 @@ def load_binding_data(
         peptides = list(group["sequence"])
 
         allele_groups[allele] = AlleleData(
-            Y=Y,
+            Y=log_ic50,
             ic50=ic50,
             peptides=peptides)
     return allele_groups, df
