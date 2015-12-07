@@ -59,7 +59,6 @@ def save_model(graph, pred, batch_size,nb_epoch, max_ic50 = 20000):
     peptide_train, mhc_train, Y_train = get_model_data(allele_list,
                                                         allele_sequence_data,
                                                         allele_groups,
-                                                        dense_mhc_model=None,
                                                         peptide_length = 9,
                                                         mhc_length=max_allele_length,
                                                         mhc_dense = None
