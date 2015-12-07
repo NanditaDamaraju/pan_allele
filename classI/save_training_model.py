@@ -60,8 +60,7 @@ def save_model(graph, pred, batch_size,nb_epoch, max_ic50 = 20000):
                                                         allele_sequence_data,
                                                         allele_groups,
                                                         peptide_length = 9,
-                                                        mhc_length=max_allele_length,
-                                                        mhc_dense = None
+                                                        mhc_length=max_allele_length
                                                         )
 
 
