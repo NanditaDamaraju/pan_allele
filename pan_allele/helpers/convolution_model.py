@@ -273,8 +273,9 @@ import theano.tensor as T
 #     graph.compile( optimizer,  {'output':'mse'})
 #     return graph
 
+
 #keras 0.3.0
-def convolution_graph_reshape(
+def convolution_graph(
                 hyperparameters = None,
                 maxlen_mhc = 181,
                 optimizer='rmsprop',

@@ -1,0 +1,11 @@
+#bleeding edge
+Theano==0.7.0
+Keras==0.3.0
+
+#others
+scipy==0.16.1
+numpy==1.10.1
+pandas==0.17.1
+
+#sequence data handling
+biopython==1.66

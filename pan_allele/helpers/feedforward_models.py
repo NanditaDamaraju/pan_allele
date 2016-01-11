@@ -6,8 +6,8 @@ from keras.optimizers import RMSprop
 import theano.tensor as T
 
 
-#keras 0.2.0
-def build_graph_native_sequence_model(
+#keras 0.3.0
+def ffn(
         hyperparameters  = None,
         optimizer='rmsprop',
         peptide_length = 9,
